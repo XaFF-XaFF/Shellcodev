@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Shellcodev.Forms
+namespace Shellcodev
 {
     public partial class Main : Form
     {
@@ -24,7 +17,7 @@ namespace Shellcodev.Forms
             instance = this;
         }
 
-        private void addInstructionBtn_Click(object sender, EventArgs e)
+        private void addinstructionBtn_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(instructionTxt.Text))
                 return;
@@ -34,11 +27,12 @@ namespace Shellcodev.Forms
 
         private void instructionTxt_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
-                addInstructionBtn_Click(sender, e);
+                addinstructionBtn_Click(sender, e);
                 instructionTxt.SelectAll();
 
+                //Disabling annoying bimbows ding sound on enter
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }

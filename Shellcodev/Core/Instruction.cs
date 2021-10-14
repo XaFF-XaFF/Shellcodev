@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using Shellcodev.Forms;
+using System.Windows.Forms;
 
 namespace Shellcodev
 {
@@ -29,7 +30,7 @@ namespace Shellcodev
             int rows = main.instructionGrid.Rows.Add(rowId);
             DataGridViewRow row = main.instructionGrid.Rows[rows];
 
-            row.Cells["Instructions"].Value = instruction;
+            row.Cells["Instruction"].Value = instruction;
             row.HeaderCell.Value = (row.Index + 1).ToString();
 
             AssemblyHandler handler = new AssemblyHandler();
