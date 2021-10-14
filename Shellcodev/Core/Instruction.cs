@@ -1,4 +1,5 @@
 ﻿using Shellcodev.Forms;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Shellcodev
@@ -36,11 +37,25 @@ namespace Shellcodev
             AssemblyHandler handler = new AssemblyHandler();
             string bytes = handler.Assembler(instruction);
 
-            var box = main.bytesBox;
-            box.AppendText(bytes);
+            ByteAppender(main, bytes);
+        }
 
-            //TODO
-            //If there are null bytes, make their color red
+        private void ByteAppender(Main main, string bytes)
+        {
+            var box = main.bytesBox;
+            string[] split = bytes.Split(' ');
+
+            foreach(string line in split)
+            {
+                if (line == "00")
+                {
+                    box.SelectionColor = Color.Red;
+                    box.AppendText(line + " ");
+                }
+                else
+                    box.AppendText(line + " ");
+            }
+            box.AppendText("\n");
         }
     }
 }

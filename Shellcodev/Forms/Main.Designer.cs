@@ -74,7 +74,7 @@
             // 
             this.bytesBox.Location = new System.Drawing.Point(549, 31);
             this.bytesBox.Name = "bytesBox";
-            this.bytesBox.Size = new System.Drawing.Size(350, 96);
+            this.bytesBox.Size = new System.Drawing.Size(350, 204);
             this.bytesBox.TabIndex = 3;
             this.bytesBox.Text = "";
             // 
