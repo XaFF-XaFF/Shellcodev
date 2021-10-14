@@ -45,6 +45,7 @@
             this.instructionGrid.Name = "instructionGrid";
             this.instructionGrid.Size = new System.Drawing.Size(343, 389);
             this.instructionGrid.TabIndex = 0;
+            this.instructionGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.instructionGrid_CellEndEdit);
             this.instructionGrid.SelectionChanged += new System.EventHandler(this.instructionGrid_SelectionChanged);
             // 
             // instructionTxt

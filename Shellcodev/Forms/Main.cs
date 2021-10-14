@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Shellcodev.Forms
@@ -77,9 +72,13 @@ namespace Shellcodev.Forms
                     int search = bytesBox.Text.IndexOf(bytesBox.Lines[i]);
                     bytesBox.Select(search, bytesBox.Lines[i].Length);
                     bytesBox.SelectionColor = Color.Blue;
-                    //bytesBox.SelectionFont = new Font("Sans Serif",)
                 }
             }
+        }
+
+        private void instructionGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            //On edit finish, update bytes in textbox
         }
     }
 }
