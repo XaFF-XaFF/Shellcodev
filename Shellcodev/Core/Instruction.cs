@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Shellcodev
 {
@@ -8,6 +7,8 @@ namespace Shellcodev
         //Validate instructions
         public bool ValidateInstruction()
         {
+            //TODO
+            //Make instruction validator
 
             //string[] split = instructionTxt.Text.Split(new string[] { ",", " "}, StringSplitOptions.None);
             //split = split.Where(x => !string.IsNullOrEmpty(x)).ToArray(); //Remove empty values from array if someused comma and space
@@ -34,7 +35,11 @@ namespace Shellcodev
             AssemblyHandler handler = new AssemblyHandler();
             string bytes = handler.Assembler(instruction);
 
-            main.bytesBox.AppendText(bytes);
+            var box = main.bytesBox;
+            box.AppendText(bytes);
+
+            //TODO
+            //If there are null bytes, make their color red
         }
     }
 }

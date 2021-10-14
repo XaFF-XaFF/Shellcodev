@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Shellcodev
@@ -25,28 +23,6 @@ namespace Shellcodev
                 return;
 
             new Instruction(instructionTxt.Text);
-        }
-
-        private void makeBtn_Click(object sender, EventArgs e)
-        {
-            string inst = null;
-            foreach(DataGridViewRow row in instructionGrid.Rows)
-            {
-                for(int i = 0; i < row.Cells.Count; i++)
-                {
-                    if (row.Cells[i].ColumnIndex == 1 && row.Cells[i + 1].Value != null)
-                    {
-                        inst += row.Cells[i].Value.ToString() + ", ";
-                    }
-                    else if (row.Cells[i].Value != null)
-                    {
-                        inst += row.Cells[i].Value.ToString() + " ";
-                    }
-                    else continue;
-                }
-                Console.WriteLine(inst);
-                inst = null;
-            }
         }
 
         private void instructionTxt_KeyDown(object sender, KeyEventArgs e)

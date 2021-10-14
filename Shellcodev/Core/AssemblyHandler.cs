@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shellcodev
 {
@@ -19,11 +15,13 @@ namespace Shellcodev
         {
             IntPtr pointer = API.AssembleInstructions(instructions);
             string bytes = Marshal.PtrToStringAnsi(pointer);
+            //TODO: Add error checker
 
+            //Starting from 0, place space every second byte
             string temp = null;
             for(int i = 0; i < bytes.Length; i++)
             {
-                if(i % 2 != 0) //Starting from 0, place space every second byte
+                if(i % 2 != 0)
                     temp += bytes[i] + " ";
                 else
                     temp += bytes[i];

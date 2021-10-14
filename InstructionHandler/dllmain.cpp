@@ -1,9 +1,7 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
 #define _CRT_SECURE_NO_WARNINGS
 #include "ihandler.h"
 #include <asmjit/asmjit.h>
 #include <asmtk/asmtk.h>
-#include <fstream>
 
 using namespace asmjit;
 using namespace asmtk;

@@ -30,13 +30,12 @@
         {
             this.instructionTxt = new System.Windows.Forms.TextBox();
             this.instructionGrid = new System.Windows.Forms.DataGridView();
+            this.Instructions = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.addinstructionBtn = new System.Windows.Forms.Button();
             this.genBtn = new System.Windows.Forms.Button();
             this.radioC = new System.Windows.Forms.RadioButton();
             this.radioCS = new System.Windows.Forms.RadioButton();
-            this.makeBtn = new System.Windows.Forms.Button();
             this.bytesBox = new System.Windows.Forms.RichTextBox();
-            this.Instructions = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.instructionGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,6 +56,12 @@
             this.instructionGrid.Name = "instructionGrid";
             this.instructionGrid.Size = new System.Drawing.Size(343, 341);
             this.instructionGrid.TabIndex = 1;
+            // 
+            // Instructions
+            // 
+            this.Instructions.HeaderText = "Instruction";
+            this.Instructions.Name = "Instructions";
+            this.Instructions.Width = 300;
             // 
             // addinstructionBtn
             // 
@@ -99,16 +104,6 @@
             this.radioCS.Text = "C# Format";
             this.radioCS.UseVisualStyleBackColor = true;
             // 
-            // makeBtn
-            // 
-            this.makeBtn.Location = new System.Drawing.Point(636, 133);
-            this.makeBtn.Name = "makeBtn";
-            this.makeBtn.Size = new System.Drawing.Size(75, 23);
-            this.makeBtn.TabIndex = 2;
-            this.makeBtn.Text = "Make";
-            this.makeBtn.UseVisualStyleBackColor = true;
-            this.makeBtn.Click += new System.EventHandler(this.makeBtn_Click);
-            // 
             // bytesBox
             // 
             this.bytesBox.Location = new System.Drawing.Point(498, 27);
@@ -116,12 +111,6 @@
             this.bytesBox.Size = new System.Drawing.Size(362, 100);
             this.bytesBox.TabIndex = 4;
             this.bytesBox.Text = "";
-            // 
-            // Instructions
-            // 
-            this.Instructions.HeaderText = "Instruction";
-            this.Instructions.Name = "Instructions";
-            this.Instructions.Width = 300;
             // 
             // Main
             // 
@@ -132,7 +121,6 @@
             this.Controls.Add(this.radioCS);
             this.Controls.Add(this.radioC);
             this.Controls.Add(this.genBtn);
-            this.Controls.Add(this.makeBtn);
             this.Controls.Add(this.addinstructionBtn);
             this.Controls.Add(this.instructionGrid);
             this.Controls.Add(this.instructionTxt);
@@ -152,7 +140,6 @@
         private System.Windows.Forms.RadioButton radioC;
         private System.Windows.Forms.RadioButton radioCS;
         public System.Windows.Forms.DataGridView instructionGrid;
-        private System.Windows.Forms.Button makeBtn;
         public System.Windows.Forms.RichTextBox bytesBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn Instructions;
     }
