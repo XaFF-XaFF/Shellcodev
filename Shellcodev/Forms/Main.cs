@@ -43,5 +43,43 @@ namespace Shellcodev.Forms
                 e.SuppressKeyPress = true;
             }
         }
+
+        private static int previousIndex;
+        private void instructionGrid_SelectionChanged(object sender, EventArgs e)
+        {
+            int index = instructionGrid.CurrentCell.RowIndex;
+
+            for(int i = 0; i < bytesBox.Lines.Count(); i++)
+            {
+                if(index == i)
+                {
+                    if(previousIndex != i)
+                    {
+                        int searchForPrevius = bytesBox.Text.IndexOf(bytesBox.Lines[previousIndex]);
+                        bytesBox.Select(searchForPrevius, bytesBox.Lines[previousIndex].Length);
+                        bytesBox.SelectionColor = Color.Black;
+
+                        if(bytesBox.Lines[previousIndex].Contains("00"))
+                        {
+                            int selectStart = bytesBox.SelectionStart;
+
+                            while ((index = bytesBox.Text.IndexOf("00", (index + 1))) != -1)
+                            {
+                                bytesBox.Select((index + 0), "00".Length);
+                                bytesBox.SelectionColor = Color.Red;
+                                bytesBox.Select(selectStart, 0);
+                                bytesBox.SelectionColor = Color.Black;
+                            }
+                        }
+                    }
+
+                    previousIndex = i;
+                    int search = bytesBox.Text.IndexOf(bytesBox.Lines[i]);
+                    bytesBox.Select(search, bytesBox.Lines[i].Length);
+                    bytesBox.SelectionColor = Color.Blue;
+                    //bytesBox.SelectionFont = new Font("Sans Serif",)
+                }
+            }
+        }
     }
 }
