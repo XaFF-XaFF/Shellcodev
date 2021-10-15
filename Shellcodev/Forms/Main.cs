@@ -13,6 +13,10 @@ namespace Shellcodev.Forms
             return instance;
         }
 
+        //TODO: Show registers value at runtime
+        //      If someone removes content of gridview row, delete it
+        //      https://github.com/asmjit/asmjit/issues/27
+
         public Main()
         {
             InitializeComponent();

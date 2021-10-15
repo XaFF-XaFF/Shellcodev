@@ -42,10 +42,10 @@ namespace Shellcodev
                 {
                     int appender = 8 - str.Length;
                     string temp2 = str;
+
                     for(int i = 0; i < appender; i++)
-                    {
                         temp2 = "0" + temp2;
-                    }
+
                     temp += temp2;
                 }
 
@@ -61,6 +61,7 @@ namespace Shellcodev
 
             //Extracting strings in double quotes
             var stringArray = instruction.Split('"');
+
             //Splitting string
             var output = stringArray[1]
                 .ToLookup(c => Math.Floor(k++ / partSize))
@@ -90,6 +91,8 @@ namespace Shellcodev
             bool arr = false;
             var converter = new InstructionConverter();
 
+            string register = instruction.Substring(3, 4);
+
             if (instruction.Contains("\""))
             {
                 arrBytes = converter.StringAssembler(instruction);
@@ -101,15 +104,25 @@ namespace Shellcodev
             AssemblyHandler handler = new AssemblyHandler();
             Forms.Main main = Forms.Main.ReturnInstance();
 
-            if(arr == true)
+            if (arr == true)
             {
-                foreach(string bt in arrBytes)
+                string lastValue = arrBytes.Last();
+                foreach (string bt in arrBytes)
                 {
                     int rows = main.instructionGrid.Rows.Add(rowId);
                     DataGridViewRow row = main.instructionGrid.Rows[rows];
 
                     row.Cells["Instruction"].Value = "push " + bt;
                     row.HeaderCell.Value = (row.Index + 1).ToString();
+
+                    if(lastValue == bt)
+                    {
+                        int rows1 = main.instructionGrid.Rows.Add(rowId);
+                        DataGridViewRow row1 = main.instructionGrid.Rows[rows1];
+
+                        row1.Cells["Instruction"].Value = "mov " + register + ", esp";
+                        row1.HeaderCell.Value = (row.Index + 2).ToString();
+                    }
                 }
             }
             else
@@ -129,6 +142,10 @@ namespace Shellcodev
                     bytes = handler.Assembler("push " + bt);
                     ByteAppender(main, bytes);
                 }
+
+                //Append pointer
+                bytes = handler.Assembler("mov " + register + ", esp");
+                ByteAppender(main, bytes);
             }
             else
             {
