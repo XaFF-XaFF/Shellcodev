@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.instructionGrid = new System.Windows.Forms.DataGridView();
+            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.instructionTxt = new System.Windows.Forms.TextBox();
             this.addInstructionBtn = new System.Windows.Forms.Button();
-            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bytesBox = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.instructionGrid)).BeginInit();
             this.SuspendLayout();
@@ -47,6 +47,12 @@
             this.instructionGrid.TabIndex = 0;
             this.instructionGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.instructionGrid_CellEndEdit);
             this.instructionGrid.SelectionChanged += new System.EventHandler(this.instructionGrid_SelectionChanged);
+            // 
+            // Instruction
+            // 
+            this.Instruction.HeaderText = "Instruction";
+            this.Instruction.Name = "Instruction";
+            this.Instruction.Width = 300;
             // 
             // instructionTxt
             // 
@@ -66,12 +72,6 @@
             this.addInstructionBtn.UseVisualStyleBackColor = true;
             this.addInstructionBtn.Click += new System.EventHandler(this.addInstructionBtn_Click);
             // 
-            // Instruction
-            // 
-            this.Instruction.HeaderText = "Instruction";
-            this.Instruction.Name = "Instruction";
-            this.Instruction.Width = 300;
-            // 
             // bytesBox
             // 
             this.bytesBox.Location = new System.Drawing.Point(549, 31);
@@ -90,7 +90,7 @@
             this.Controls.Add(this.instructionTxt);
             this.Controls.Add(this.instructionGrid);
             this.Name = "Main";
-            this.Text = "Main";
+            this.Text = "Shellcodev";
             ((System.ComponentModel.ISupportInitialize)(this.instructionGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

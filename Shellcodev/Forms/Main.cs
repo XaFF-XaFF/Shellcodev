@@ -88,7 +88,6 @@ namespace Shellcodev.Forms
                 return;
 
             string bytes = handler.Assembler(rowValue.ToString());
-
             int search = bytesBox.Text.IndexOf(bytesBox.Lines[editedRow]);
 
             bytesBox.Select(search, bytesBox.Lines[editedRow].Length);

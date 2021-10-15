@@ -1,5 +1,4 @@
-﻿using Shellcodev.Forms;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace Shellcodev
@@ -27,7 +26,7 @@ namespace Shellcodev
         {
             this.instruction = instruction;
 
-            Main main = Main.ReturnInstance();
+            Forms.Main main = Forms.Main.ReturnInstance();
             int rows = main.instructionGrid.Rows.Add(rowId);
             DataGridViewRow row = main.instructionGrid.Rows[rows];
 
@@ -40,7 +39,7 @@ namespace Shellcodev
             ByteAppender(main, bytes);
         }
 
-        private void ByteAppender(Main main, string bytes)
+        private void ByteAppender(Forms.Main main, string bytes)
         {
             var box = main.bytesBox;
             string[] split = bytes.Split(' ');
