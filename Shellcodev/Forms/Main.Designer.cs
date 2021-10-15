@@ -33,6 +33,7 @@
             this.instructionTxt = new System.Windows.Forms.TextBox();
             this.addInstructionBtn = new System.Windows.Forms.Button();
             this.bytesBox = new System.Windows.Forms.RichTextBox();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.instructionGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,17 +75,26 @@
             // 
             // bytesBox
             // 
-            this.bytesBox.Location = new System.Drawing.Point(549, 31);
+            this.bytesBox.Location = new System.Drawing.Point(553, 80);
             this.bytesBox.Name = "bytesBox";
             this.bytesBox.Size = new System.Drawing.Size(350, 204);
             this.bytesBox.TabIndex = 3;
             this.bytesBox.Text = "";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(436, 31);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(467, 30);
+            this.richTextBox1.TabIndex = 4;
+            this.richTextBox1.Text = "";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(948, 485);
+            this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.bytesBox);
             this.Controls.Add(this.addInstructionBtn);
             this.Controls.Add(this.instructionTxt);
@@ -103,5 +113,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Instruction;
         public System.Windows.Forms.DataGridView instructionGrid;
         public System.Windows.Forms.RichTextBox bytesBox;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

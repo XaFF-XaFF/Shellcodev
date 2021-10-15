@@ -1,4 +1,8 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Shellcodev
@@ -17,6 +21,64 @@ namespace Shellcodev
         }
     }
 
+    public class InstructionConverter
+    {
+        private string EncodeValues(string instructionPart, bool small)
+        {
+            byte[] bytes = Encoding.Default.GetBytes(instructionPart);
+            var hexString = BitConverter.ToString(bytes);
+            string[] splited = hexString.Split('-');
+
+            List<string> result = new List<string>();
+            for(int i = splited.Length - 1; i >= 0; i--)
+                result.Add(splited[i]);
+
+            string temp = null;
+            if(!small)
+                foreach (string str in result)
+                    temp += str;
+            else
+                foreach(string str in result)
+                {
+                    int appender = 8 - str.Length;
+                    string temp2 = str;
+                    for(int i = 0; i < appender; i++)
+                    {
+                        temp2 = "0" + temp2;
+                    }
+                    temp += temp2;
+                }
+
+            return "0x" + temp;
+        }
+
+        public string[] StringAssembler(string instruction)
+        {
+            AssemblyHandler handler = new AssemblyHandler();
+            List<string> list = new List<string>();
+            double partSize = 4;
+            int k = 0;
+
+            //Extracting strings in double quotes
+            var stringArray = instruction.Split('"');
+            //Splitting string
+            var output = stringArray[1]
+                .ToLookup(c => Math.Floor(k++ / partSize))
+                .Select(e => new String(e.ToArray()));
+
+            List<string> result = new List<string>();
+            foreach(string str in output)
+            {
+                if (str.Length < 4)
+                    result.Add(EncodeValues(str, true));
+                else
+                    result.Add(EncodeValues(str, false));
+            }
+
+            return result.ToArray();
+        }
+    }
+
     public class Instruction
     {
         public string instruction;
@@ -24,19 +86,55 @@ namespace Shellcodev
 
         public Instruction(string instruction)
         {
+            string[] arrBytes = null;
+            bool arr = false;
+            var converter = new InstructionConverter();
+
+            if (instruction.Contains("\""))
+            {
+                arrBytes = converter.StringAssembler(instruction);
+                arr = true;
+            }
+
             this.instruction = instruction;
 
-            Forms.Main main = Forms.Main.ReturnInstance();
-            int rows = main.instructionGrid.Rows.Add(rowId);
-            DataGridViewRow row = main.instructionGrid.Rows[rows];
-
-            row.Cells["Instruction"].Value = instruction;
-            row.HeaderCell.Value = (row.Index + 1).ToString();
-
             AssemblyHandler handler = new AssemblyHandler();
-            string bytes = handler.Assembler(instruction);
+            Forms.Main main = Forms.Main.ReturnInstance();
 
-            ByteAppender(main, bytes);
+            if(arr == true)
+            {
+                foreach(string bt in arrBytes)
+                {
+                    int rows = main.instructionGrid.Rows.Add(rowId);
+                    DataGridViewRow row = main.instructionGrid.Rows[rows];
+
+                    row.Cells["Instruction"].Value = "push " + bt;
+                    row.HeaderCell.Value = (row.Index + 1).ToString();
+                }
+            }
+            else
+            {
+                int rows = main.instructionGrid.Rows.Add(rowId);
+                DataGridViewRow row = main.instructionGrid.Rows[rows];
+
+                row.Cells["Instruction"].Value = instruction;
+                row.HeaderCell.Value = (row.Index + 1).ToString();
+            }
+
+            string bytes = null;
+            if(arr == true)
+            {
+                foreach(string bt in arrBytes)
+                {
+                    bytes = handler.Assembler("push " + bt);
+                    ByteAppender(main, bytes);
+                }
+            }
+            else
+            {
+                bytes = handler.Assembler(instruction);
+                ByteAppender(main, bytes);
+            }
         }
 
         private void ByteAppender(Forms.Main main, string bytes)
