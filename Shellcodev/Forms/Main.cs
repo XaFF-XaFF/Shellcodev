@@ -78,7 +78,26 @@ namespace Shellcodev.Forms
 
         private void instructionGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            //On edit finish, update bytes in textbox
+            AssemblyHandler handler = new AssemblyHandler();
+
+            int editedRow = e.RowIndex;
+            DataGridViewRow row = instructionGrid.Rows[editedRow];
+
+            string rowValue = row.Cells[0].Value.ToString();
+            string bytes = handler.Assembler(rowValue);
+
+            for(int i = 0; i < bytesBox.Lines.Length; i++) //Has to be fixed
+            {
+                if(editedRow == i) //Lines are wrongly appended
+                {
+                    bytesBox.Select(i, bytesBox.Lines[i].Length);
+
+                    if(editedRow == 0)
+                        bytesBox.SelectedText = bytes;
+                    else
+                        bytesBox.SelectedText = "\n"+bytes;
+                }
+            }
         }
     }
 }

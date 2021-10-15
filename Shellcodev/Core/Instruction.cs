@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Shellcodev
 {
-    public class InstrctuionValidator
+    public class InstructionValidator
     {
         //Validate instructions
         public bool ValidateInstruction()
