@@ -48,6 +48,12 @@
   <ItemGroup>
     <Compile Include="Core\AssemblyHandler.cs" />
     <Compile Include="Core\Instruction.cs" />
+    <Compile Include="Forms\Generator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Generator.Designer.cs">
+      <DependentUpon>Generator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -56,6 +62,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\Generator.resx">
+      <DependentUpon>Generator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>

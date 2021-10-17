@@ -15,7 +15,6 @@ namespace Shellcodev.Forms
         }
 
         //TODO: Show registers value at runtime
-        //      If someone removes content of gridview row, delete it
         //      https://github.com/asmjit/asmjit/issues/27
 
         public Main()
@@ -35,6 +34,17 @@ namespace Shellcodev.Forms
 
             if (MessageBox.Show("0x" + hexValue, "Function address (Press OK to copy)", MessageBoxButtons.OK) == System.Windows.Forms.DialogResult.OK)
                 Clipboard.SetText("0x" + hexValue);
+        }
+
+        private void generateBtn_Click(object sender, EventArgs e)
+        {
+            string bytes = bytesBox.Text;
+            if (csRBtn.Checked)
+                new Generator(bytes, true);
+            else if (cRBtn.Checked)
+                new Generator(bytes, false);
+            else
+                return;
         }
 
         #region InstructionRegion
