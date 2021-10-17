@@ -8,6 +8,7 @@ namespace Shellcodev.Forms
 {
     public partial class Main : Form
     {
+        private static int previousIndex;
         private static Main instance;
         public static Main ReturnInstance()
         {
@@ -24,6 +25,7 @@ namespace Shellcodev.Forms
             instance = this;
         }
 
+        #region InstructionRegion
         private void addInstructionBtn_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(instructionTxt.Text))
@@ -44,7 +46,6 @@ namespace Shellcodev.Forms
             }
         }
 
-        private static int previousIndex;
         private void instructionGrid_SelectionChanged(object sender, EventArgs e)
         {
             int index = instructionGrid.CurrentCell.RowIndex;
@@ -89,8 +90,31 @@ namespace Shellcodev.Forms
             DataGridViewRow row = instructionGrid.Rows[editedRow];
 
             var rowValue = row.Cells[0].Value;
-            if (rowValue == null)
+            if (rowValue == null) //Remove row from grid
+            {
+                instructionGrid.Rows.Remove(row);
+                
+                //Resort indexes
+                for(int i = editedRow;  i < instructionGrid.Rows.Count; i++)
+                {
+                    DataGridViewRow dgvr = instructionGrid.Rows[i];
+                    if(dgvr.Cells[0].Value != null)
+                        dgvr.HeaderCell.Value = (dgvr.Index + 1).ToString();
+                }
+
+                //Remove line from textbox
+                int startIndex = bytesBox.GetFirstCharIndexFromLine(editedRow);
+                int count = bytesBox.Lines[editedRow].Length;
+
+                if(editedRow < bytesBox.Lines.Length - 1)
+                {
+                    count += bytesBox.GetFirstCharIndexFromLine(editedRow + 1) -
+                        ((startIndex + count - 1) + 1);
+                }
+                bytesBox.Text = bytesBox.Text.Remove(startIndex, count);
+
                 return;
+            }
 
             string bytes = handler.Assembler(rowValue.ToString());
             int search = bytesBox.Text.IndexOf(bytesBox.Lines[editedRow]);
@@ -98,6 +122,7 @@ namespace Shellcodev.Forms
             bytesBox.Select(search, bytesBox.Lines[editedRow].Length);
             bytesBox.SelectedText = bytes;
         }
+        #endregion
 
         private void getAddrBtn_Click(object sender, EventArgs e)
         {
