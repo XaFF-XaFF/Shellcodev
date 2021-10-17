@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Shellcodev.Forms
@@ -23,6 +22,19 @@ namespace Shellcodev.Forms
         {
             InitializeComponent();
             instance = this;
+        }
+
+        private void getAddrBtn_Click(object sender, EventArgs e)
+        {
+            string dll = dllAddrBox.Text;
+            string function = funcTxt.Text;
+
+            var lib = API.LoadLibrary(dll);
+            var address = API.GetProcAddress(lib, function);
+            string hexValue = address.ToString("X");
+
+            if (MessageBox.Show("0x" + hexValue, "Function address (Press OK to copy)", MessageBoxButtons.OK) == System.Windows.Forms.DialogResult.OK)
+                Clipboard.SetText("0x" + hexValue);
         }
 
         #region InstructionRegion
@@ -124,17 +136,18 @@ namespace Shellcodev.Forms
         }
         #endregion
 
-        private void getAddrBtn_Click(object sender, EventArgs e)
+        #region radio
+        private void cRBtn_CheckedChanged(object sender, EventArgs e)
         {
-            string dll = dllAddrBox.Text;
-            string function = funcTxt.Text;
-
-            var lib = API.LoadLibrary(dll);
-            var address = API.GetProcAddress(lib, function);
-            string hexValue = address.ToString("X");
-
-            if(MessageBox.Show("0x"+hexValue, "Function address (Press OK to copy)", MessageBoxButtons.OK) == System.Windows.Forms.DialogResult.OK)
-                Clipboard.SetText("0x" + hexValue);
+            if(csRBtn.Checked)
+                csRBtn.Checked = false;
         }
+
+        private void csRBtn_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cRBtn.Checked)
+                cRBtn.Checked = false;
+        }
+        #endregion
     }
 }

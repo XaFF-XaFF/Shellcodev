@@ -256,6 +256,7 @@
             this.cRBtn.TabStop = true;
             this.cRBtn.Text = "C Format";
             this.cRBtn.UseVisualStyleBackColor = true;
+            this.cRBtn.CheckedChanged += new System.EventHandler(this.cRBtn_CheckedChanged);
             // 
             // csRBtn
             // 
@@ -267,6 +268,7 @@
             this.csRBtn.TabStop = true;
             this.csRBtn.Text = "C# Format";
             this.csRBtn.UseVisualStyleBackColor = true;
+            this.csRBtn.CheckedChanged += new System.EventHandler(this.csRBtn_CheckedChanged);
             // 
             // generateBtn
             // 
