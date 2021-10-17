@@ -40,10 +40,9 @@ namespace Shellcodev
             else
                 foreach(string str in result)
                 {
-                    int appender = 8 - str.Length;
                     string temp2 = str;
 
-                    for(int i = 0; i < appender; i++)
+                    for(int i = 0; i < 8 - str.Length; i++)
                         temp2 = "0" + temp2;
 
                     temp += temp2;
