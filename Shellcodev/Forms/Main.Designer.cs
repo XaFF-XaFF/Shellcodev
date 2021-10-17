@@ -45,7 +45,7 @@
             this.shlcTestBtn = new System.Windows.Forms.Button();
             this.dllAddrBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.funcTxt = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.getAddrBtn = new System.Windows.Forms.Button();
@@ -211,12 +211,12 @@
             this.label6.TabIndex = 5;
             this.label6.Text = "Get address:";
             // 
-            // textBox1
+            // funcTxt
             // 
-            this.textBox1.Location = new System.Drawing.Point(664, 98);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(121, 20);
-            this.textBox1.TabIndex = 6;
+            this.funcTxt.Location = new System.Drawing.Point(664, 98);
+            this.funcTxt.Name = "funcTxt";
+            this.funcTxt.Size = new System.Drawing.Size(121, 20);
+            this.funcTxt.TabIndex = 6;
             // 
             // label7
             // 
@@ -244,6 +244,7 @@
             this.getAddrBtn.TabIndex = 2;
             this.getAddrBtn.Text = "Get Address";
             this.getAddrBtn.UseVisualStyleBackColor = true;
+            this.getAddrBtn.Click += new System.EventHandler(this.getAddrBtn_Click);
             // 
             // cRBtn
             // 
@@ -283,7 +284,7 @@
             this.ClientSize = new System.Drawing.Size(832, 595);
             this.Controls.Add(this.csRBtn);
             this.Controls.Add(this.cRBtn);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.funcTxt);
             this.Controls.Add(this.dllAddrBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -330,7 +331,7 @@
         private System.Windows.Forms.Button shlcTestBtn;
         private System.Windows.Forms.TextBox dllAddrBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox funcTxt;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button getAddrBtn;

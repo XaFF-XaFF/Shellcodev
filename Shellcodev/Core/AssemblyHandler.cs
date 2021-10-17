@@ -7,6 +7,12 @@ namespace Shellcodev
     {
         [DllImport("instrhandle.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr AssembleInstructions(string instruction);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string procname);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr LoadLibrary(string name);
     }
 
     public class AssemblyHandler
