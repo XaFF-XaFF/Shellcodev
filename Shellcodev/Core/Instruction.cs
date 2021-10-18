@@ -23,6 +23,7 @@ namespace Shellcodev
 
     public class InstructionConverter
     {
+        public bool bitwise = false;
         private string EncodeValues(string instructionPart, bool small)
         {
             byte[] bytes = Encoding.Default.GetBytes(instructionPart);
@@ -34,19 +35,33 @@ namespace Shellcodev
                 result.Add(splited[i]);
 
             string temp = null;
-            if(!small)
-                foreach (string str in result)
-                    temp += str;
-            else
-                foreach(string str in result)
+            foreach (string str in result)
+                temp += str;
+
+            //Testing if push would contain nullbytes
+            AssemblyHandler handler = new AssemblyHandler();
+            string test = handler.Assembler("push 0x" + temp);
+            string temp1 = null;
+            for(int i = 0; i < test.Length; i++)
+            {
+                if(temp1 != null && temp1.Length % 2 == 0)
                 {
-                    string temp2 = str;
+                    if (temp1 == "00")
+                    {
+                        int value = Convert.ToInt32("0x" + temp, 16);
+                        int key = Convert.ToInt32("0x11111111", 16);
 
-                    for(int i = 0; i < 8 - str.Length; i++)
-                        temp2 = "0" + temp2;
+                        int res = value ^ key;
+                        string hexResult = res.ToString("X");
 
-                    temp += temp2;
+                        bitwise = true;
+                        return "0x" + hexResult;
+                    }
+                    else
+                        temp1 = null;
                 }
+                temp1 += test[i];
+            }
 
             return "0x" + temp;
         }
@@ -67,7 +82,7 @@ namespace Shellcodev
                 .Select(e => new String(e.ToArray()));
 
             List<string> result = new List<string>();
-            foreach(string str in output)
+            foreach (string str in output)
             {
                 if (str.Length < 4)
                     result.Add(EncodeValues(str, true));
@@ -82,8 +97,10 @@ namespace Shellcodev
     public class Instruction
     {
         public string instruction;
+        public string register;
         private static int rowId = 1;
 
+        //Rewrite. Add support for XORed values and make stack vice versa
         public Instruction(string instruction)
         {
             string[] arrBytes = null;
@@ -91,6 +108,7 @@ namespace Shellcodev
             var converter = new InstructionConverter();
 
             string register = instruction.Substring(3, 4);
+            this.register = register;
 
             if (instruction.Contains("\""))
             {

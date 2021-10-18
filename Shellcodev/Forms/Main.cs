@@ -15,6 +15,10 @@ namespace Shellcodev.Forms
         }
 
         //TODO: Show registers value at runtime
+        //      Repair string snippet for short strings (string < 4 chars showing error: InvalidState)
+        //      String snippet: Build the stack vice versa
+        //      Repair gridview index lenght, 2 digit number looks like 1 digit number
+        //      After applying changes select the last row
         //      https://github.com/asmjit/asmjit/issues/27
 
         public Main()

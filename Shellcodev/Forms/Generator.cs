@@ -23,8 +23,13 @@ namespace Shellcodev.Forms
         {
             string[] byteArray = bytes.Split(new char[] {' ','\n'}, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string str in byteArray)
-                shellTxt.Text += "0x" + str + " ";
+            for(int i = 0; i < byteArray.Length; i++)
+            {
+                if(i == byteArray.Length - 1)
+                    shellTxt.Text += "0x" + byteArray[i];
+                else
+                    shellTxt.Text += "0x" + byteArray[i] + " ,";
+            }
         }
 
         private void CFormat(string bytes)
