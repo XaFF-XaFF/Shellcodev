@@ -55,7 +55,7 @@ namespace Shellcodev
                         string hexResult = res.ToString("X");
 
                         bitwise = true;
-                        return "0x" + hexResult;
+                        return "xor" + "0x" + hexResult;
                     }
                     else
                         temp1 = null;
@@ -96,49 +96,69 @@ namespace Shellcodev
 
     public class Instruction
     {
-        public string instruction;
         public string register;
         private static int rowId = 1;
 
         //Rewrite. Add support for XORed values and make stack vice versa
         public Instruction(string instruction)
         {
-            string[] arrBytes = null;
-            bool arr = false;
             var converter = new InstructionConverter();
+            var handler = new AssemblyHandler();
+            var main = Forms.Main.ReturnInstance();
 
-            string register = instruction.Substring(3, 4);
-            this.register = register;
+            //Extract register from command
+            string[] bytes = null;
+            bool array = false;
 
-            if (instruction.Contains("\""))
+            //Check if instruction contains double qoutes, if yes execute StringAssembler
+            this.register = instruction.Substring(3, 4);
+
+            if(instruction.Contains("\""))
             {
-                arrBytes = converter.StringAssembler(instruction);
-                arr = true;
+                bytes = converter.StringAssembler(instruction);
+                array = true;
             }
 
-            this.instruction = instruction;
-
-            AssemblyHandler handler = new AssemblyHandler();
-            Forms.Main main = Forms.Main.ReturnInstance();
-
-            if (arr == true)
+            int counter = 1;
+            if(array)
             {
-                string lastValue = arrBytes.Last();
-                foreach (string bt in arrBytes)
+                string lastValue = bytes.Last();
+
+                for (int i = bytes.Length - 1; i >= 0; i--)
                 {
                     int rows = main.instructionGrid.Rows.Add(rowId);
                     DataGridViewRow row = main.instructionGrid.Rows[rows];
 
-                    row.Cells["Instruction"].Value = "push " + bt;
-                    row.HeaderCell.Value = (row.Index + 1).ToString();
-
-                    if(lastValue == bt)
+                    if (bytes[i].StartsWith("xor"))
                     {
-                        int rows1 = main.instructionGrid.Rows.Add(rowId);
-                        DataGridViewRow row1 = main.instructionGrid.Rows[rows1];
+                        row.Cells["Instruction"].Value = "mov " + register + ", " + bytes[i].Substring(3);
+                        row.HeaderCell.Value = (row.Index + counter++).ToString();
 
-                        row1.Cells["Instruction"].Value = "mov " + register + ", esp";
-                        row1.HeaderCell.Value = (row.Index + 2).ToString();
+                        int _rows = main.instructionGrid.Rows.Add(rowId);
+                        DataGridViewRow _row = main.instructionGrid.Rows[_rows];
+
+                        _row.Cells["Instruction"].Value = "xor " + register + ", 0x11111111";
+                        _row.HeaderCell.Value = (row.Index + counter++).ToString();
+
+                        _rows = main.instructionGrid.Rows.Add(rowId);
+                        _row = main.instructionGrid.Rows[_rows];
+
+                        _row.Cells["Instruction"].Value = "push " + register;
+                        _row.HeaderCell.Value = (row.Index + counter++).ToString();
+                    }
+                    else
+                    {
+                        row.Cells["Instruction"].Value = "push " + bytes[i];
+                        row.HeaderCell.Value = (row.Index + 2).ToString();
+                    }
+
+                    if(lastValue == bytes[i])
+                    {
+                        int _rows = main.instructionGrid.Rows.Add(rowId);
+                        DataGridViewRow _row = main.instructionGrid.Rows[_rows];
+
+                        _row.Cells["Instruction"].Value = "mov " + register + ", esp";
+                        _row.HeaderCell.Value = (row.Index + counter++).ToString();
                     }
                 }
             }
@@ -151,24 +171,37 @@ namespace Shellcodev
                 row.HeaderCell.Value = (row.Index + 1).ToString();
             }
 
-            string bytes = null;
-            if(arr == true)
+            string tempBytes = null;
+            if (array)
             {
-                foreach(string bt in arrBytes)
+                for (int i = bytes.Length - 1; i >= 0; i--)
                 {
-                    bytes = handler.Assembler("push " + bt);
-                    ByteAppender(main, bytes);
+                    if (bytes[i].StartsWith("xor"))
+                    {
+                        tempBytes = handler.Assembler("mov " + register + ", " + bytes[i].Substring(3));
+                        ByteAppender(main, tempBytes);
+
+                        tempBytes = handler.Assembler("xor " + register + ", 0x11111111");
+                        ByteAppender(main, tempBytes);
+
+                        tempBytes = handler.Assembler("push " + register);
+                        ByteAppender(main, tempBytes);
+                    }
+                    else
+                    {
+                        tempBytes = handler.Assembler("push " + bytes[i]);
+                        ByteAppender(main, tempBytes);
+                    }
                 }
 
-                //Append pointer
-                bytes = handler.Assembler("mov " + register + ", esp");
-                ByteAppender(main, bytes);
+                tempBytes = handler.Assembler("mov " + register + ", esp");
+                ByteAppender(main, tempBytes);
             }
             else
             {
-                bytes = handler.Assembler(instruction);
-                ByteAppender(main, bytes);
-            }
+                tempBytes = handler.Assembler(instruction);
+                ByteAppender(main, tempBytes);
+            }    
         }
 
         private void ByteAppender(Forms.Main main, string bytes)

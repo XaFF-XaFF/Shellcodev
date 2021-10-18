@@ -15,8 +15,6 @@ namespace Shellcodev.Forms
         }
 
         //TODO: Show registers value at runtime
-        //      Repair string snippet for short strings (string < 4 chars showing error: InvalidState)
-        //      String snippet: Build the stack vice versa
         //      Repair gridview index lenght, 2 digit number looks like 1 digit number
         //      After applying changes select the last row
         //      https://github.com/asmjit/asmjit/issues/27
@@ -118,7 +116,10 @@ namespace Shellcodev.Forms
             var rowValue = row.Cells[0].Value;
             if (rowValue == null) //Remove row from grid
             {
-                instructionGrid.Rows.Remove(row);
+                try //Editing empty row and setting it to null
+                { instructionGrid.Rows.Remove(row); }
+                catch (Exception)
+                { return; }  
                 
                 //Resort indexes
                 for(int i = editedRow;  i < instructionGrid.Rows.Count; i++)
