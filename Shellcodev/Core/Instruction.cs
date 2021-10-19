@@ -151,16 +151,13 @@ namespace Shellcodev
                         row.Cells["Instruction"].Value = "push " + bytes[i];
                         row.HeaderCell.Value = (row.Index + 2).ToString();
                     }
-
-                    if(lastValue == bytes[i])
-                    {
-                        int _rows = main.instructionGrid.Rows.Add(rowId);
-                        DataGridViewRow _row = main.instructionGrid.Rows[_rows];
-
-                        _row.Cells["Instruction"].Value = "mov " + register + ", esp";
-                        _row.HeaderCell.Value = (row.Index + counter++).ToString();
-                    }
                 }
+
+                int _rows1 = main.instructionGrid.Rows.Add(rowId);
+                DataGridViewRow _row1 = main.instructionGrid.Rows[_rows1];
+
+                _row1.Cells["Instruction"].Value = "mov " + register + ", esp";
+                _row1.HeaderCell.Value = (_row1.Index + counter++).ToString();
             }
             else
             {
