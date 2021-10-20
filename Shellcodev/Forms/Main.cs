@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Shellcodev.Forms
@@ -104,6 +105,9 @@ namespace Shellcodev.Forms
                     bytesBox.SelectionColor = Color.Blue;
                 }
             }
+
+            int lastRow = instructionGrid.Rows.Count - 1;
+            instructionGrid.Rows[lastRow].Cells["Instruction"].Selected = true;
         }
 
         private void instructionGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)

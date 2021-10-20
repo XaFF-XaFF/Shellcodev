@@ -111,7 +111,9 @@ namespace Shellcodev
             bool array = false;
 
             //Check if instruction contains double qoutes, if yes execute StringAssembler
-            this.register = instruction.Substring(3, 4);
+            try { this.register = instruction.Substring(3, 4); }
+            catch(Exception)
+            { }
 
             if(instruction.Contains("\""))
             {
