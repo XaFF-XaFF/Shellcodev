@@ -164,5 +164,26 @@ namespace Shellcodev.Forms
                 cRBtn.Checked = false;
         }
         #endregion
+
+        private void shlcTestBtn_Click(object sender, EventArgs e)
+        {
+            string text = bytesBox.Text;
+            string[] byteArray = text.Split(new char[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            string temp = null;
+            for (int i = 0; i < byteArray.Length; i++)
+            {
+                if (i == byteArray.Length - 1)
+                    temp += "0x" + byteArray[i];
+                else
+                    temp += "0x" + byteArray[i] + ", ";
+            }
+
+            byte[] converted = temp.Split(new[] { ", " }, StringSplitOptions.None)
+                                .Select(str => Convert.ToByte(str, 16))
+                                .ToArray();
+
+            new ShellcodeLoader(converted);
+        }
     }
 }

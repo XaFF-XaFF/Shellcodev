@@ -5,7 +5,7 @@ namespace Shellcodev
 {
     class API
     {
-        [DllImport("instrhandle.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("instrHandler_x86.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr AssembleInstructions(string instruction);
 
         [DllImport("kernel32.dll")]
@@ -13,6 +13,22 @@ namespace Shellcodev
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string name);
+
+        [DllImport("kernel32")]
+        public static extern IntPtr VirtualAlloc(
+            IntPtr lpAddress, uint dwSize, 
+            uint flAllocationType, uint flProtect);
+
+        [DllImport("kernel32", CharSet = CharSet.Ansi)]
+        public static extern IntPtr CreateThread(
+            IntPtr lpThreadAttributes, uint dwStackSize, 
+            IntPtr lpStartAddress, IntPtr lpParameter, 
+            uint dwCreationFlags, IntPtr lpThreadId);
+
+        [DllImport("kernel32.dll")]
+        public static extern uint WaitForSingleObject(
+            IntPtr hHandle,
+            uint dwMilliseconds);
     }
 
     public class AssemblyHandler
@@ -34,6 +50,18 @@ namespace Shellcodev
             }
 
             return temp;
+        }
+    }
+
+    public class ShellcodeLoader
+    {
+        public ShellcodeLoader(byte[] bytes)
+        {
+            IntPtr pointer = API.VirtualAlloc(IntPtr.Zero, (uint)bytes.Length, 0x1000, 0x40);
+            Marshal.Copy(bytes, 0, pointer, bytes.Length);
+
+            IntPtr hThread = API.CreateThread(IntPtr.Zero, 0, pointer, IntPtr.Zero, 0, IntPtr.Zero);
+            API.WaitForSingleObject(hThread, 0xFFFFFFFF);
         }
     }
 }

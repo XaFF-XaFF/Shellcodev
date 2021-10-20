@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.instructionGrid = new System.Windows.Forms.DataGridView();
+            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.instructionTxt = new System.Windows.Forms.TextBox();
             this.addInstructionBtn = new System.Windows.Forms.Button();
             this.bytesBox = new System.Windows.Forms.RichTextBox();
@@ -40,7 +41,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.testerBldBtn = new System.Windows.Forms.Button();
             this.shlcTestBtn = new System.Windows.Forms.Button();
             this.dllAddrBox = new System.Windows.Forms.TextBox();
@@ -66,6 +66,12 @@
             this.instructionGrid.TabIndex = 0;
             this.instructionGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.instructionGrid_CellEndEdit);
             this.instructionGrid.SelectionChanged += new System.EventHandler(this.instructionGrid_SelectionChanged);
+            // 
+            // Instruction
+            // 
+            this.Instruction.HeaderText = "Instruction";
+            this.Instruction.Name = "Instruction";
+            this.Instruction.Width = 328;
             // 
             // instructionTxt
             // 
@@ -171,12 +177,6 @@
             this.label5.TabIndex = 5;
             this.label5.Text = "Indexes";
             // 
-            // Instruction
-            // 
-            this.Instruction.HeaderText = "Instruction";
-            this.Instruction.Name = "Instruction";
-            this.Instruction.Width = 328;
-            // 
             // testerBldBtn
             // 
             this.testerBldBtn.Location = new System.Drawing.Point(445, 564);
@@ -194,6 +194,7 @@
             this.shlcTestBtn.TabIndex = 2;
             this.shlcTestBtn.Text = "Test shellcode";
             this.shlcTestBtn.UseVisualStyleBackColor = true;
+            this.shlcTestBtn.Click += new System.EventHandler(this.shlcTestBtn_Click);
             // 
             // dllAddrBox
             // 
