@@ -185,6 +185,7 @@
             this.testerBldBtn.TabIndex = 2;
             this.testerBldBtn.Text = "Build shellcode tester";
             this.testerBldBtn.UseVisualStyleBackColor = true;
+            this.testerBldBtn.Click += new System.EventHandler(this.testerBldBtn_Click);
             // 
             // shlcTestBtn
             // 

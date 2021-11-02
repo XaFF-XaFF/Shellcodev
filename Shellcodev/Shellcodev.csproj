@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AssemblyHandler.cs" />
+    <Compile Include="Core\Builder.cs" />
     <Compile Include="Core\Instruction.cs" />
     <Compile Include="Forms\Generator.cs">
       <SubType>Form</SubType>
@@ -76,6 +77,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
