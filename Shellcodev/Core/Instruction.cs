@@ -7,20 +7,6 @@ using System.Windows.Forms;
 
 namespace Shellcodev
 {
-    public class InstructionValidator
-    {
-        //Validate instructions
-        public bool ValidateInstruction()
-        {
-            //TODO
-            //Make instruction validator
-
-            //string[] split = instructionTxt.Text.Split(new string[] { ",", " "}, StringSplitOptions.None);
-            //split = split.Where(x => !string.IsNullOrEmpty(x)).ToArray(); //Remove empty values from array if someused comma and space
-            return true;
-        }
-    }
-
     public class InstructionConverter
     {
         public bool bitwise = false;
@@ -38,7 +24,7 @@ namespace Shellcodev
             foreach (string str in result)
                 temp += str;
 
-            //Testing if push would contain nullbytes
+            //Testing if push contains nullbytes
             AssemblyHandler handler = new AssemblyHandler();
             string test = handler.Assembler("push 0x" + temp);
             string temp1 = null;
@@ -73,10 +59,10 @@ namespace Shellcodev
             double partSize = 4;
             int k = 0;
 
-            //Extracting strings in double quotes
+            // Extracting string from double quotes
             var stringArray = instruction.Split('"');
 
-            //Splitting string
+            // Splitting string
             var output = stringArray[1]
                 .ToLookup(c => Math.Floor(k++ / partSize))
                 .Select(e => new String(e.ToArray()));
@@ -99,23 +85,25 @@ namespace Shellcodev
         public string register;
         private static int rowId = 1;
 
-        //Rewrite. Add support for XORed values and make stack vice versa
         public Instruction(string instruction)
         {
             var converter = new InstructionConverter();
             var handler = new AssemblyHandler();
             var main = Forms.Main.ReturnInstance();
 
-            //Extract register from command
             string[] bytes = null;
             bool array = false;
 
-            //Check if instruction contains double qoutes, if yes execute StringAssembler
+            // Extract register from command
             try { this.register = instruction.Substring(3, 4); }
             catch(Exception)
             { }
 
-            if(instruction.Contains("\""))
+            // Check if instruction contains double quotes and if yes execute StringAssembler
+            // This function is used to automate process of string appendance into the shellcode.
+            // Features: Stack is built vice versa. Strings are splitted to 4 chars each and encoded with little endian.
+            // Strings that contain nullbytes are xored to avoid shellcode from termination
+            if (instruction.Contains("\""))
             {
                 bytes = converter.StringAssembler(instruction);
                 array = true;
@@ -210,6 +198,7 @@ namespace Shellcodev
 
             foreach(string line in split)
             {
+                // Make red instructions that have nullbytes
                 if (line == "00")
                 {
                     box.SelectionColor = Color.Red;

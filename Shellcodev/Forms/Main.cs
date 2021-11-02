@@ -2,7 +2,6 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Shellcodev.Forms
@@ -25,6 +24,7 @@ namespace Shellcodev.Forms
         {
             InitializeComponent();
             instance = this;
+            instructionGrid.AllowUserToAddRows = false;
         }
 
         private void getAddrBtn_Click(object sender, EventArgs e)
@@ -54,6 +54,9 @@ namespace Shellcodev.Forms
         #region InstructionRegion
         private void addInstructionBtn_Click(object sender, EventArgs e)
         {
+            //Disable row sorting
+            instructionGrid.Columns.Cast<DataGridViewColumn>().ToList().ForEach(f => f.SortMode = DataGridViewColumnSortMode.NotSortable);
+
             if (String.IsNullOrEmpty(instructionTxt.Text))
                 return;
 

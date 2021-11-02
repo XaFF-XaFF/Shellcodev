@@ -37,7 +37,8 @@ namespace Shellcodev
         {
             IntPtr pointer = API.AssembleInstructions(instructions);
             string bytes = Marshal.PtrToStringAnsi(pointer);
-            //TODO: Add error checker
+            if (bytes == "InvalidInstruction")
+                return "Error!: Invalid instruction.";
 
             //Starting from 0, place space every second byte
             string temp = null;
