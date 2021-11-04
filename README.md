@@ -4,7 +4,7 @@ Shellcodev is a tool designed to help and automate the process of shellcode crea
 ### Features
   1. Snippets
   2. Instruction assembling in real time
-  3. [TODO] Showing register values in real time
+  3. [TODO] Showing registers values in real time
   4. Testing shellcode by injecting it into the process
   5. Testing shellcode by embedding it into the executable
   6. Dll function address extractor
