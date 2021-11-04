@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.instructionGrid = new System.Windows.Forms.DataGridView();
             this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.instructionTxt = new System.Windows.Forms.TextBox();
@@ -335,6 +336,7 @@
             this.Controls.Add(this.addInstructionBtn);
             this.Controls.Add(this.instructionTxt);
             this.Controls.Add(this.instructionGrid);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximumSize = new System.Drawing.Size(1127, 779);
             this.MinimumSize = new System.Drawing.Size(1127, 779);
