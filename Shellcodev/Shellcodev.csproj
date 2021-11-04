@@ -49,6 +49,7 @@
     <Compile Include="Core\AssemblyHandler.cs" />
     <Compile Include="Core\Builder.cs" />
     <Compile Include="Core\Instruction.cs" />
+    <Compile Include="Core\Snippet.cs" />
     <Compile Include="Forms\Generator.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -27,6 +27,25 @@ namespace Shellcodev.Forms
             instructionGrid.AllowUserToAddRows = false;
         }
 
+        public void ByteAppender(string bytes)
+        {
+            var box = this.bytesBox;
+            string[] split = bytes.Split(' ');
+
+            foreach (string line in split)
+            {
+                // Make red instructions that have nullbytes
+                if (line == "00")
+                {
+                    box.SelectionColor = Color.Red;
+                    box.AppendText(line + " ");
+                }
+                else
+                    box.AppendText(line + " ");
+            }
+            box.AppendText("\n");
+        }
+
         private void getAddrBtn_Click(object sender, EventArgs e)
         {
             string dll = dllAddrBox.Text;
@@ -75,10 +94,13 @@ namespace Shellcodev.Forms
             }
         }
 
+        //Repair
         private void instructionGrid_SelectionChanged(object sender, EventArgs e)
         {
             int index = instructionGrid.CurrentCell.RowIndex;
+            Console.WriteLine("Selection number: " + index);
 
+            //Repair
             for(int i = 0; i < bytesBox.Lines.Count(); i++)
             {
                 if(index == i)
@@ -159,7 +181,7 @@ namespace Shellcodev.Forms
         }
         #endregion
 
-        #region radio
+        #region RadioButtons
         private void cRBtn_CheckedChanged(object sender, EventArgs e)
         {
             if(csRBtn.Checked)
@@ -173,6 +195,7 @@ namespace Shellcodev.Forms
         }
         #endregion
 
+        #region Testing
         private void shlcTestBtn_Click(object sender, EventArgs e)
         {
             string text = bytesBox.Text;
@@ -215,5 +238,6 @@ namespace Shellcodev.Forms
             Builder builder = new Builder();
             builder.Build(converted);
         }
+        #endregion
     }
 }

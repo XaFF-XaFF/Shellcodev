@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shellcodev.Core;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -89,10 +90,12 @@ namespace Shellcodev
         {
             var converter = new InstructionConverter();
             var handler = new AssemblyHandler();
+            var parser = new Snippet();
             var main = Forms.Main.ReturnInstance();
 
             string[] bytes = null;
             bool array = false;
+            string tempBytes = null;
 
             // Extract register from command
             try { this.register = instruction.Substring(3, 4); }
@@ -106,48 +109,9 @@ namespace Shellcodev
             if (instruction.Contains("\""))
             {
                 bytes = converter.StringAssembler(instruction);
+                parser.SnippetParser(main, register, bytes);
+                parser.SnippetAppender(main, register, bytes);
                 array = true;
-            }
-
-            int counter = 1;
-            if(array)
-            {
-                string lastValue = bytes.Last();
-
-                for (int i = bytes.Length - 1; i >= 0; i--)
-                {
-                    int rows = main.instructionGrid.Rows.Add(rowId);
-                    DataGridViewRow row = main.instructionGrid.Rows[rows];
-
-                    if (bytes[i].StartsWith("xor"))
-                    {
-                        row.Cells["Instruction"].Value = "mov " + register + ", " + bytes[i].Substring(3);
-                        row.HeaderCell.Value = (row.Index + counter++).ToString();
-
-                        int _rows = main.instructionGrid.Rows.Add(rowId);
-                        DataGridViewRow _row = main.instructionGrid.Rows[_rows];
-
-                        _row.Cells["Instruction"].Value = "xor " + register + ", 0x11111111";
-                        _row.HeaderCell.Value = (row.Index + counter++).ToString();
-
-                        _rows = main.instructionGrid.Rows.Add(rowId);
-                        _row = main.instructionGrid.Rows[_rows];
-
-                        _row.Cells["Instruction"].Value = "push " + register;
-                        _row.HeaderCell.Value = (row.Index + counter++).ToString();
-                    }
-                    else
-                    {
-                        row.Cells["Instruction"].Value = "push " + bytes[i];
-                        row.HeaderCell.Value = (row.Index + 2).ToString();
-                    }
-                }
-
-                int _rows1 = main.instructionGrid.Rows.Add(rowId);
-                DataGridViewRow _row1 = main.instructionGrid.Rows[_rows1];
-
-                _row1.Cells["Instruction"].Value = "mov " + register + ", esp";
-                _row1.HeaderCell.Value = (_row1.Index + counter++).ToString();
             }
             else
             {
@@ -156,58 +120,27 @@ namespace Shellcodev
 
                 row.Cells["Instruction"].Value = instruction;
                 row.HeaderCell.Value = (row.Index + 1).ToString();
-            }
 
-            string tempBytes = null;
-            if (array)
-            {
-                for (int i = bytes.Length - 1; i >= 0; i--)
-                {
-                    if (bytes[i].StartsWith("xor"))
-                    {
-                        tempBytes = handler.Assembler("mov " + register + ", " + bytes[i].Substring(3));
-                        ByteAppender(main, tempBytes);
-
-                        tempBytes = handler.Assembler("xor " + register + ", 0x11111111");
-                        ByteAppender(main, tempBytes);
-
-                        tempBytes = handler.Assembler("push " + register);
-                        ByteAppender(main, tempBytes);
-                    }
-                    else
-                    {
-                        tempBytes = handler.Assembler("push " + bytes[i]);
-                        ByteAppender(main, tempBytes);
-                    }
-                }
-
-                tempBytes = handler.Assembler("mov " + register + ", esp");
-                ByteAppender(main, tempBytes);
-            }
-            else
-            {
                 tempBytes = handler.Assembler(instruction);
-                ByteAppender(main, tempBytes);
-            }    
-        }
-
-        private void ByteAppender(Forms.Main main, string bytes)
-        {
-            var box = main.bytesBox;
-            string[] split = bytes.Split(' ');
-
-            foreach(string line in split)
-            {
-                // Make red instructions that have nullbytes
-                if (line == "00")
-                {
-                    box.SelectionColor = Color.Red;
-                    box.AppendText(line + " ");
-                }
-                else
-                    box.AppendText(line + " ");
+                main.ByteAppender(tempBytes);
             }
-            box.AppendText("\n");
+        
+            //if(array)
+            //{
+            //    parser.SnippetParser(main, register, bytes);
+            //    parser.SnippetAppender(main, register, bytes);
+            //}
+            //else
+            //{
+            //    int rows = main.instructionGrid.Rows.Add(rowId);
+            //    DataGridViewRow row = main.instructionGrid.Rows[rows];
+
+            //    row.Cells["Instruction"].Value = instruction;
+            //    row.HeaderCell.Value = (row.Index + 1).ToString();
+
+            //    tempBytes = handler.Assembler(instruction);
+            //    main.ByteAppender(tempBytes);
+            //}   
         }
     }
 }
