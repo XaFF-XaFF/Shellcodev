@@ -19,7 +19,7 @@
                   If string contains nullbytes it's being XORed to avoid shellcode termination. 
                   Stack is build vice versa.
                   
-.dll.function     [TODO] Automatically extracts function address from dll. Address is getting converted 
+.dll.function     Automatically extracts function address from dll. Address is getting converted 
                   into hex and encoded with little endian.
 ```
 
