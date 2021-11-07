@@ -1,5 +1,8 @@
-# Shellcodev
-Shellcodev is a tool designed to help and automate the process of shellcode creation.
+<div align="center">
+  <h1>Shellcodev</h1>
+  <h3>Shellcodev is a tool designed to help and automate the process of shellcode creation.</h3>
+  <img width=250 height=250 src="https://github.com/XaFF-XaFF/Shellcodev/blob/master/readme/shellcodev.png?raw=true" alt="Shellcodev's logo"/>
+</div>
 
 ### Features
   1. Snippets
@@ -14,8 +17,10 @@ Shellcodev is a tool designed to help and automate the process of shellcode crea
 ```
 "string"          Automatically converts string into hex and encodes it with little endian. 
                   If string contains nullbytes it's being XORed to avoid shellcode termination. 
-                  Stack is build vice versa
+                  Stack is build vice versa.
                   
-.dll.function     Automatically extracts function address from dll. Address is getting converted 
-                  into hex and encoded with little endian         
+.dll.function     [TODO] Automatically extracts function address from dll. Address is getting converted 
+                  into hex and encoded with little endian.
 ```
+
+### [TODO] Snippets examples
