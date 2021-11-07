@@ -1,7 +1,6 @@
 ﻿using Shellcodev.Core;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -94,13 +93,15 @@ namespace Shellcodev
             var main = Forms.Main.ReturnInstance();
 
             string[] bytes = null;
-            bool array = false;
             string tempBytes = null;
 
             // Extract register from command
-            try { this.register = instruction.Substring(3, 4); }
+            try 
+            { 
+                this.register = instruction.Substring(3, 4); 
+            }
             catch(Exception)
-            { }
+            { return; }
 
             // Check if instruction contains double quotes and if yes execute StringAssembler
             // This function is used to automate process of string appendance into the shellcode.
@@ -111,7 +112,6 @@ namespace Shellcodev
                 bytes = converter.StringAssembler(instruction);
                 parser.SnippetParser(main, register, bytes);
                 parser.SnippetAppender(main, register, bytes);
-                array = true;
             }
             else
             {
@@ -124,23 +124,6 @@ namespace Shellcodev
                 tempBytes = handler.Assembler(instruction);
                 main.ByteAppender(tempBytes);
             }
-        
-            //if(array)
-            //{
-            //    parser.SnippetParser(main, register, bytes);
-            //    parser.SnippetAppender(main, register, bytes);
-            //}
-            //else
-            //{
-            //    int rows = main.instructionGrid.Rows.Add(rowId);
-            //    DataGridViewRow row = main.instructionGrid.Rows[rows];
-
-            //    row.Cells["Instruction"].Value = instruction;
-            //    row.HeaderCell.Value = (row.Index + 1).ToString();
-
-            //    tempBytes = handler.Assembler(instruction);
-            //    main.ByteAppender(tempBytes);
-            //}   
         }
     }
 }

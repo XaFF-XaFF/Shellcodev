@@ -21,8 +21,6 @@ extern "C"
 
 	__declspec(dllexport) const char* AssembleInstructions(const char* instruction);
 
-	//__declspec(dllexport) const char* GetRegister(const char* command);
-
 #if defined (__cplusplus)
 }
 #endif

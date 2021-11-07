@@ -62,7 +62,7 @@
             this.instructionGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Instruction});
             this.instructionGrid.Location = new System.Drawing.Point(47, 198);
-            this.instructionGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.instructionGrid.Margin = new System.Windows.Forms.Padding(4);
             this.instructionGrid.Name = "instructionGrid";
             this.instructionGrid.RowHeadersWidth = 51;
             this.instructionGrid.Size = new System.Drawing.Size(495, 479);
@@ -80,7 +80,7 @@
             // instructionTxt
             // 
             this.instructionTxt.Location = new System.Drawing.Point(47, 697);
-            this.instructionTxt.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.instructionTxt.Margin = new System.Windows.Forms.Padding(4);
             this.instructionTxt.Name = "instructionTxt";
             this.instructionTxt.Size = new System.Drawing.Size(317, 22);
             this.instructionTxt.TabIndex = 1;
@@ -89,7 +89,7 @@
             // addInstructionBtn
             // 
             this.addInstructionBtn.Location = new System.Drawing.Point(441, 694);
-            this.addInstructionBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addInstructionBtn.Margin = new System.Windows.Forms.Padding(4);
             this.addInstructionBtn.Name = "addInstructionBtn";
             this.addInstructionBtn.Size = new System.Drawing.Size(100, 27);
             this.addInstructionBtn.TabIndex = 2;
@@ -100,7 +100,7 @@
             // bytesBox
             // 
             this.bytesBox.Location = new System.Drawing.Point(593, 198);
-            this.bytesBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bytesBox.Margin = new System.Windows.Forms.Padding(4);
             this.bytesBox.Name = "bytesBox";
             this.bytesBox.Size = new System.Drawing.Size(452, 478);
             this.bytesBox.TabIndex = 3;
@@ -110,7 +110,7 @@
             // 
             this.registersBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.registersBox.Location = new System.Drawing.Point(47, 48);
-            this.registersBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.registersBox.Margin = new System.Windows.Forms.Padding(4);
             this.registersBox.Multiline = false;
             this.registersBox.Name = "registersBox";
             this.registersBox.ReadOnly = true;
@@ -122,7 +122,7 @@
             // 
             this.pointersBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.pointersBox.Location = new System.Drawing.Point(47, 149);
-            this.pointersBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pointersBox.Margin = new System.Windows.Forms.Padding(4);
             this.pointersBox.Multiline = false;
             this.pointersBox.Name = "pointersBox";
             this.pointersBox.ReadOnly = true;
@@ -174,7 +174,7 @@
             // 
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.richTextBox1.Location = new System.Drawing.Point(47, 98);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox1.Multiline = false;
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
@@ -195,7 +195,7 @@
             // testerBldBtn
             // 
             this.testerBldBtn.Location = new System.Drawing.Point(593, 694);
-            this.testerBldBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.testerBldBtn.Margin = new System.Windows.Forms.Padding(4);
             this.testerBldBtn.Name = "testerBldBtn";
             this.testerBldBtn.Size = new System.Drawing.Size(161, 27);
             this.testerBldBtn.TabIndex = 2;
@@ -206,7 +206,7 @@
             // shlcTestBtn
             // 
             this.shlcTestBtn.Location = new System.Drawing.Point(885, 694);
-            this.shlcTestBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.shlcTestBtn.Margin = new System.Windows.Forms.Padding(4);
             this.shlcTestBtn.Name = "shlcTestBtn";
             this.shlcTestBtn.Size = new System.Drawing.Size(161, 27);
             this.shlcTestBtn.TabIndex = 2;
@@ -217,7 +217,7 @@
             // dllAddrBox
             // 
             this.dllAddrBox.Location = new System.Drawing.Point(637, 121);
-            this.dllAddrBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dllAddrBox.Margin = new System.Windows.Forms.Padding(4);
             this.dllAddrBox.Name = "dllAddrBox";
             this.dllAddrBox.Size = new System.Drawing.Size(160, 22);
             this.dllAddrBox.TabIndex = 6;
@@ -235,7 +235,7 @@
             // funcTxt
             // 
             this.funcTxt.Location = new System.Drawing.Point(885, 121);
-            this.funcTxt.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.funcTxt.Margin = new System.Windows.Forms.Padding(4);
             this.funcTxt.Name = "funcTxt";
             this.funcTxt.Size = new System.Drawing.Size(160, 22);
             this.funcTxt.TabIndex = 6;
@@ -263,7 +263,7 @@
             // getAddrBtn
             // 
             this.getAddrBtn.Location = new System.Drawing.Point(788, 153);
-            this.getAddrBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.getAddrBtn.Margin = new System.Windows.Forms.Padding(4);
             this.getAddrBtn.Name = "getAddrBtn";
             this.getAddrBtn.Size = new System.Drawing.Size(112, 27);
             this.getAddrBtn.TabIndex = 2;
@@ -275,7 +275,7 @@
             // 
             this.cRBtn.AutoSize = true;
             this.cRBtn.Location = new System.Drawing.Point(868, 38);
-            this.cRBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cRBtn.Margin = new System.Windows.Forms.Padding(4);
             this.cRBtn.Name = "cRBtn";
             this.cRBtn.Size = new System.Drawing.Size(86, 21);
             this.cRBtn.TabIndex = 7;
@@ -288,7 +288,7 @@
             // 
             this.csRBtn.AutoSize = true;
             this.csRBtn.Location = new System.Drawing.Point(868, 64);
-            this.csRBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.csRBtn.Margin = new System.Windows.Forms.Padding(4);
             this.csRBtn.Name = "csRBtn";
             this.csRBtn.Size = new System.Drawing.Size(94, 21);
             this.csRBtn.TabIndex = 7;
@@ -300,7 +300,7 @@
             // generateBtn
             // 
             this.generateBtn.Location = new System.Drawing.Point(720, 28);
-            this.generateBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.generateBtn.Margin = new System.Windows.Forms.Padding(4);
             this.generateBtn.Name = "generateBtn";
             this.generateBtn.Size = new System.Drawing.Size(133, 68);
             this.generateBtn.TabIndex = 2;
@@ -337,7 +337,7 @@
             this.Controls.Add(this.instructionTxt);
             this.Controls.Add(this.instructionGrid);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximumSize = new System.Drawing.Size(1127, 779);
             this.MinimumSize = new System.Drawing.Size(1127, 779);
             this.Name = "Main";
@@ -354,7 +354,6 @@
         public System.Windows.Forms.DataGridView instructionGrid;
         public System.Windows.Forms.RichTextBox bytesBox;
         private System.Windows.Forms.RichTextBox registersBox;
-        private System.Windows.Forms.RichTextBox pointersBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -373,5 +372,6 @@
         private System.Windows.Forms.RadioButton cRBtn;
         private System.Windows.Forms.RadioButton csRBtn;
         private System.Windows.Forms.Button generateBtn;
+        public System.Windows.Forms.RichTextBox pointersBox;
     }
 }

@@ -25,6 +25,9 @@ namespace Shellcodev.Forms
             InitializeComponent();
             instance = this;
             instructionGrid.AllowUserToAddRows = false;
+
+            Registers reg = new Registers();
+            reg.SetRegisters();
         }
 
         public void ByteAppender(string bytes)
