@@ -3,9 +3,9 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Shellcodev.Core
+namespace Shellcodev.CONTEXTS
 {
-    internal class API
+    class API
     {
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetCurrentThread();
@@ -80,10 +80,14 @@ namespace Shellcodev.Core
             public byte[] ExtendedRegisters;
         }
     }
+}
+
+namespace Shellcodev.Core
+{
 
     class Registers
     {
-        private void RegisterParser(API.CONTEXT context, string[] split)
+        private void RegisterParser(CONTEXTS.API.CONTEXT context, string[] split)
         {
             var main = Main.ReturnInstance();
 
@@ -107,14 +111,14 @@ namespace Shellcodev.Core
         public void SetRegisters()
         {
             var main = Main.ReturnInstance();
-            var context = new API.CONTEXT();
+            var context = new CONTEXTS.API.CONTEXT();
 
-            context.ContextFlags = (uint)API.CONTEXT_FLAGS.CONTEXT_ALL;
-            IntPtr hThread = API.GetCurrentThread();
+            context.ContextFlags = (uint)CONTEXTS.API.CONTEXT_FLAGS.CONTEXT_ALL;
+            IntPtr hThread = CONTEXTS.API.GetCurrentThread();
 
             string[] split = main.pointersBox.Text.Split(' ');
 
-            if (API.GetThreadContext(hThread, ref context))
+            if (CONTEXTS.API.GetThreadContext(hThread, ref context))
             {
                 RegisterParser(context, split);
             }

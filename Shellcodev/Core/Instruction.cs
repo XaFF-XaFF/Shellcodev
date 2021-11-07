@@ -113,6 +113,23 @@ namespace Shellcodev
                 parser.SnippetParser(main, register, bytes);
                 parser.SnippetAppender(main, register, bytes);
             }
+            else if(instruction.Contains("."))
+            {
+                string[] split = instruction.Split('.');
+                if (split.Length < 3)
+                    return;
+
+                string hex = parser.GetAddress(split[1], split[2]);
+
+                int rows = main.instructionGrid.Rows.Add(rowId);
+                DataGridViewRow row = main.instructionGrid.Rows[rows];
+
+                row.Cells["Instruction"].Value = instruction;
+                row.HeaderCell.Value = (row.Index + 1).ToString();
+
+                tempBytes = handler.Assembler(split[0] + hex);
+                main.ByteAppender(tempBytes);
+            }
             else
             {
                 int rows = main.instructionGrid.Rows.Add(rowId);

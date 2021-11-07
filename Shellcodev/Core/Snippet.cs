@@ -5,6 +5,15 @@ namespace Shellcodev.Core
 {
     class Snippet
     {
+        public string GetAddress(string dll, string function)
+        {
+            var lib = API.LoadLibrary(dll+".dll");
+            var procaddr = API.GetProcAddress(lib, function);
+            string hexValue = procaddr.ToString("X");
+
+            return "0x" + hexValue;
+        }
+
         private static int rowId = 1;
         public void SnippetParser(Main instance, string register, string[] bytes)
         {
