@@ -124,7 +124,7 @@ namespace Shellcodev
                 int rows = main.instructionGrid.Rows.Add(rowId);
                 DataGridViewRow row = main.instructionGrid.Rows[rows];
 
-                row.Cells["Instruction"].Value = instruction;
+                row.Cells["Instruction"].Value = split[0] + hex;
                 row.HeaderCell.Value = (row.Index + 1).ToString();
 
                 tempBytes = handler.Assembler(split[0] + hex);
