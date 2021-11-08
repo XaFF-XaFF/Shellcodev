@@ -1,0 +1,18 @@
+﻿<Application x:Class="Shellcodevv.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Shellcodevv"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="CloseBtn" UriSource="Icons/close-button.png"/>
+            <BitmapImage x:Key="MinimizeBtn" UriSource="Icons/minus-sign.png"/>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Assets/ButtonTheme.xaml"/>
+                <ResourceDictionary Source="Assets/RichTxtTheme.xaml"/>
+                <ResourceDictionary Source="Assets/TextboxTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,183 @@
+﻿<Window x:Class="Shellcodevv.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Shellcodevv"
+        mc:Ignorable="d"
+        Title="Shellcodev"
+        Height="701"
+        Width="1027"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown"
+        WindowStartupLocation="CenterScreen"
+        >
+    <Border
+        CornerRadius="10"
+        BorderThickness="3"
+        BorderBrush="White">
+        <!--#ed0000-->
+
+        <Border.Background>
+            #2b2b2b
+        </Border.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="262*"/>
+                <RowDefinition Height="509*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!--Buttons-->
+
+            <Button
+                Style="{StaticResource ButtonTheme}"
+                Grid.Column="1"
+                Name="ExitBtn"
+                Click="ExitBtn_Checked"
+                Content="{StaticResource CloseBtn}"
+                Background="Transparent"
+                Margin="483,10,10,211"/>
+
+            <Button
+                Style="{StaticResource ButtonTheme}"
+                Grid.Column="1"
+                Name="MinimizeBtn"
+                Click="MinimizeBtn_Checked"
+                Content="{StaticResource MinimizeBtn}"
+                Background="Transparent"
+                Margin="466,10,29,211"/>
+
+            <!--Row 0 Column 0-->
+
+            <Label
+                Content="Shellcodev"
+                Foreground="White"
+                FontSize="17"
+                FontStyle="Oblique"/>
+
+            <Label
+                Content="Registry"
+                Foreground="White"
+                FontSize="14"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" Margin="5,39,0,0"/>
+
+            <RichTextBox
+               Name="registryRbox"
+               Margin="10,65,10,147"
+               Style="{StaticResource RichTxtboxTheme}" />
+
+            <Label
+                Content="Indexes"
+                Foreground="White"
+                FontSize="14"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" Margin="5,89,0,0"/>
+
+            <RichTextBox
+               Name="indexesRbox"  
+               Margin="10,115,10,97"
+               Style="{StaticResource RichTxtboxTheme}" />
+
+            <Label
+                Content="Pointers"
+                Foreground="White"
+                FontSize="14"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" Margin="5,139,0,0"/>
+
+            <RichTextBox
+               Name="pointersRbox"
+               Margin="10,165,10,47"
+               Style="{StaticResource RichTxtboxTheme}" />
+
+            <!--Row 0 Column 1-->
+            <Button
+                Name="generateBtn"
+                Grid.Column="1"
+                Style="{StaticResource ButtonTheme}"
+                Content="Generate"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Height="41"
+                Margin="318,179,132,16"
+                Width="60"/>
+
+            <RadioButton
+                Name="csharpRadio"
+                Grid.Column="1"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="C# Format"
+                Margin="383,204,47,17"
+                Width="80"/>
+
+            <RadioButton
+                Name="cRadio"
+                Grid.Column="1"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="C Format"
+                Margin="383,181,47,40"
+                Width="80"/>
+
+            <TextBox
+                Name="dllTxtbox"
+                Foreground="White"
+                FontSize="13"
+                Text=""
+                Grid.Column="1"
+                Style="{StaticResource TxtboxTheme}" Margin="46,83,277,130"/>
+
+            <TextBox
+                Name="functionTxtbox"
+                Foreground="White"
+                FontSize="13"
+                Text=""
+                Grid.Column="1"
+                Style="{StaticResource TxtboxTheme}" Margin="277,83,46,130"/>
+
+            <Label
+                Grid.Column="1"
+                Content="DLL:"
+                Foreground="White"
+                FontSize="13"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" Margin="46,61,0,0" Height="28" Width="56"/>
+
+            <Label
+                Grid.Column="1"
+                Content="Function:"
+                Foreground="White"
+                FontSize="13"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" Margin="275,61,0,0" Height="28" Width="68"/>
+
+            <Button
+                Name="getAddressBtn"
+                Grid.Column="1"
+                Style="{StaticResource ButtonTheme}"
+                Content="Get Address"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Height="28"
+                Margin="217,111,217,97"
+                Width="76"/>
+
+        </Grid>
+
+    </Border>
+</Window>
