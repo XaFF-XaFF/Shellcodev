@@ -7,7 +7,7 @@ namespace Shellcodev.Core
     {
         public string GetAddress(string dll, string function)
         {
-            var lib = API.LoadLibrary(dll+".dll");
+            var lib = API.LoadLibrary(dll + ".dll");
             var procaddr = API.GetProcAddress(lib, function);
             string hexValue = procaddr.ToString("X");
 

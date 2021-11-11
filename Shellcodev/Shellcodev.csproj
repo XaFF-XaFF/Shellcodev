@@ -37,6 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,7 +69,6 @@
     <Compile Include="Core\AssemblyHandler.cs" />
     <Compile Include="Core\Builder.cs" />
     <Compile Include="Core\Instruction.cs" />
-    <Compile Include="Core\Registers.cs" />
     <Compile Include="Core\Snippet.cs" />
     <Compile Include="Forms\Generator.cs">
       <SubType>Form</SubType>

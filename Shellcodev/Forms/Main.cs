@@ -17,6 +17,7 @@ namespace Shellcodev.Forms
         }
 
         //TODO: Show registers value at runtime
+        //      Make instruction handler handle on main process
         //      Repair gridview index lenght, 2 digit number looks like 1 digit number
         //      https://github.com/asmjit/asmjit/issues/27
 
@@ -26,8 +27,8 @@ namespace Shellcodev.Forms
             instance = this;
             instructionGrid.AllowUserToAddRows = false;
 
-            Registers reg = new Registers();
-            reg.SetRegisters();
+            AssemblyHandler handler = new AssemblyHandler();
+            handler.SetRegisters(null);
         }
 
         public void ByteAppender(string bytes)

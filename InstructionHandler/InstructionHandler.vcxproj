@@ -214,6 +214,8 @@
     <ClCompile Include="..\..\asmtk\src\asmtk\asmparser.cpp" />
     <ClCompile Include="..\..\asmtk\src\asmtk\asmtokenizer.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="eval.cpp" />
+    <ClCompile Include="setup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\asmjit\src\asmjit\asmjit-scope-begin.h" />
