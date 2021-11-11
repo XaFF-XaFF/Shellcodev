@@ -12,6 +12,7 @@
   5. Testing shellcode by embedding it into the executable
   6. Dll function address extractor
   7. Converting bytes into chosen format (C / C#)
+  8. [TODO] Save project to file
 
 ### Snippets
 ```
