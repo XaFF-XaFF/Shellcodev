@@ -40,6 +40,8 @@ const char* AssembleInstructions(const char* instruction)
 	return (const char*)result;
 }
 
+// CODE USED FROM WinREPL
+// https://github.com/zerosum0x0/WinREPL
 registers_t* GetRegisters(const char* instruction)
 {
 	if (!Runner(&ctx))
