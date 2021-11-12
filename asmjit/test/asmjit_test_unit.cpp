@@ -1,11 +1,28 @@
-// [AsmJit]
-// Complete x86/x64 JIT and Remote Assembler for C++.
+// AsmJit - Machine code generation for C++
 //
-// [License]
-// Zlib - See LICENSE.md file in the package.
+//  * Official AsmJit Home Page: https://asmjit.com
+//  * Official Github Repository: https://github.com/asmjit/asmjit
+//
+// Copyright (c) 2008-2020 The AsmJit Authors
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//    claim that you wrote the original software. If you use this software
+//    in a product, an acknowledgment in the product documentation would be
+//    appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//    misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
 
-// [Dependencies]
-#include "./asmjit.h"
+#include <asmjit/asmjit.h>
+#include "./broken.h"
 
 using namespace asmjit;
 
@@ -18,147 +35,54 @@ struct DumpCpuFeature {
   const char* name;
 };
 
-static void dumpCpuFeatures(const CpuInfo& cpu, const DumpCpuFeature* data, size_t count) {
-  for (size_t i = 0; i < count; i++)
-    if (cpu.hasFeature(data[i].feature))
-      INFO("  %s", data[i].name);
+static const char* archToString(uint32_t arch) noexcept {
+  switch (arch & ~Environment::kArchBigEndianMask) {
+    case Environment::kArchX86      : return "X86";
+    case Environment::kArchX64      : return "X64";
+    case Environment::kArchARM      : return "ARM";
+    case Environment::kArchThumb    : return "Thumb";
+    case Environment::kArchAArch64  : return "AArch64";
+    case Environment::kArchMIPS32_LE: return "MIPS";
+    case Environment::kArchMIPS64_LE: return "MIPS64";
+    default: return "Unknown";
+  }
 }
 
-static void dumpCpu(void) {
-  const CpuInfo& cpu = CpuInfo::getHost();
+static void dumpCpu(void) noexcept {
+  const CpuInfo& cpu = CpuInfo::host();
+
+  // --------------------------------------------------------------------------
+  // [CPU Information]
+  // --------------------------------------------------------------------------
 
   INFO("Host CPU:");
-  INFO("  Vendor string           : %s", cpu.getVendorString());
-  INFO("  Brand string            : %s", cpu.getBrandString());
-  INFO("  Family                  : %u", cpu.getFamily());
-  INFO("  Model                   : %u", cpu.getModel());
-  INFO("  Stepping                : %u", cpu.getStepping());
-  INFO("  HW-Threads Count        : %u", cpu.getHwThreadsCount());
+  INFO("  Vendor                  : %s", cpu.vendor());
+  INFO("  Brand                   : %s", cpu.brand());
+  INFO("  Model ID                : %u", cpu.modelId());
+  INFO("  Brand ID                : %u", cpu.brandId());
+  INFO("  Family ID               : %u", cpu.familyId());
+  INFO("  Stepping                : %u", cpu.stepping());
+  INFO("  Processor Type          : %u", cpu.processorType());
+  INFO("  Max logical Processors  : %u", cpu.maxLogicalProcessors());
+  INFO("  Cache-Line Size         : %u", cpu.cacheLineSize());
+  INFO("  HW-Thread Count         : %u", cpu.hwThreadCount());
   INFO("");
 
   // --------------------------------------------------------------------------
-  // [ARM / ARM64]
+  // [CPU Features]
   // --------------------------------------------------------------------------
 
-#if ASMJIT_ARCH_ARM32 || ASMJIT_ARCH_ARM64
-  static const DumpCpuFeature armFeaturesList[] = {
-    { CpuInfo::kArmFeatureV6              , "ARMv6"                },
-    { CpuInfo::kArmFeatureV7              , "ARMv7"                },
-    { CpuInfo::kArmFeatureV8              , "ARMv8"                },
-    { CpuInfo::kArmFeatureTHUMB           , "THUMB"                },
-    { CpuInfo::kArmFeatureTHUMB2          , "THUMBv2"              },
-    { CpuInfo::kArmFeatureVFP2            , "VFPv2"                },
-    { CpuInfo::kArmFeatureVFP3            , "VFPv3"                },
-    { CpuInfo::kArmFeatureVFP4            , "VFPv4"                },
-    { CpuInfo::kArmFeatureVFP_D32         , "VFP D32"              },
-    { CpuInfo::kArmFeatureNEON            , "NEON"                 },
-    { CpuInfo::kArmFeatureDSP             , "DSP"                  },
-    { CpuInfo::kArmFeatureIDIV            , "IDIV"                 },
-    { CpuInfo::kArmFeatureAES             , "AES"                  },
-    { CpuInfo::kArmFeatureCRC32           , "CRC32"                },
-    { CpuInfo::kArmFeatureSHA1            , "SHA1"                 },
-    { CpuInfo::kArmFeatureSHA256          , "SHA256"               },
-    { CpuInfo::kArmFeatureAtomics64       , "64-bit atomics"       }
+#ifndef ASMJIT_NO_LOGGING
+  INFO("CPU Features:");
+  BaseFeatures::Iterator it(cpu.features().iterator());
+  while (it.hasNext()) {
+    uint32_t featureId = uint32_t(it.next());
+    StringTmp<64> featureString;
+    Formatter::formatFeature(featureString, cpu.arch(), featureId);
+    INFO("  %s\n", featureString.data());
   };
-
-  INFO("ARM Features:");
-  dumpCpuFeatures(cpu, armFeaturesList, ASMJIT_ARRAY_SIZE(armFeaturesList));
   INFO("");
-#endif
-
-  // --------------------------------------------------------------------------
-  // [X86 / X64]
-  // --------------------------------------------------------------------------
-
-#if ASMJIT_ARCH_X86 || ASMJIT_ARCH_X64
-  static const DumpCpuFeature x86FeaturesList[] = {
-    { CpuInfo::kX86FeatureNX              , "NX (Non-Execute Bit)" },
-    { CpuInfo::kX86FeatureMT              , "MT (Multi-Threading)" },
-    { CpuInfo::kX86FeatureCMOV            , "CMOV"                 },
-    { CpuInfo::kX86FeatureCMPXCHG8B       , "CMPXCHG8B"            },
-    { CpuInfo::kX86FeatureCMPXCHG16B      , "CMPXCHG16B"           },
-    { CpuInfo::kX86FeatureMSR             , "MSR"                  },
-    { CpuInfo::kX86FeatureRDTSC           , "RDTSC"                },
-    { CpuInfo::kX86FeatureRDTSCP          , "RDTSCP"               },
-    { CpuInfo::kX86FeatureCLFLUSH         , "CLFLUSH"              },
-    { CpuInfo::kX86FeatureCLFLUSHOPT      , "CLFLUSHOPT"           },
-    { CpuInfo::kX86FeatureCLWB            , "CLWB"                 },
-    { CpuInfo::kX86FeatureCLZERO          , "CLZERO"               },
-    { CpuInfo::kX86FeaturePCOMMIT         , "PCOMMIT"              },
-    { CpuInfo::kX86FeaturePREFETCHW       , "PREFETCHW"            },
-    { CpuInfo::kX86FeaturePREFETCHWT1     , "PREFETCHWT1"          },
-    { CpuInfo::kX86FeatureLAHFSAHF        , "LAHF/SAHF"            },
-    { CpuInfo::kX86FeatureFXSR            , "FXSR"                 },
-    { CpuInfo::kX86FeatureFXSROPT         , "FXSROPT"              },
-    { CpuInfo::kX86FeatureMMX             , "MMX"                  },
-    { CpuInfo::kX86FeatureMMX2            , "MMX2"                 },
-    { CpuInfo::kX86Feature3DNOW           , "3DNOW"                },
-    { CpuInfo::kX86Feature3DNOW2          , "3DNOW2"               },
-    { CpuInfo::kX86FeatureSSE             , "SSE"                  },
-    { CpuInfo::kX86FeatureSSE2            , "SSE2"                 },
-    { CpuInfo::kX86FeatureSSE3            , "SSE3"                 },
-    { CpuInfo::kX86FeatureSSSE3           , "SSSE3"                },
-    { CpuInfo::kX86FeatureSSE4A           , "SSE4A"                },
-    { CpuInfo::kX86FeatureSSE4_1          , "SSE4.1"               },
-    { CpuInfo::kX86FeatureSSE4_2          , "SSE4.2"               },
-    { CpuInfo::kX86FeatureMSSE            , "Misaligned SSE"       },
-    { CpuInfo::kX86FeatureMONITOR         , "MONITOR/MWAIT"        },
-    { CpuInfo::kX86FeatureMOVBE           , "MOVBE"                },
-    { CpuInfo::kX86FeaturePOPCNT          , "POPCNT"               },
-    { CpuInfo::kX86FeatureLZCNT           , "LZCNT"                },
-    { CpuInfo::kX86FeatureAESNI           , "AESNI"                },
-    { CpuInfo::kX86FeaturePCLMULQDQ       , "PCLMULQDQ"            },
-    { CpuInfo::kX86FeatureRDRAND          , "RDRAND"               },
-    { CpuInfo::kX86FeatureRDSEED          , "RDSEED"               },
-    { CpuInfo::kX86FeatureSMAP            , "SMAP"                 },
-    { CpuInfo::kX86FeatureSMEP            , "SMEP"                 },
-    { CpuInfo::kX86FeatureSHA             , "SHA"                  },
-    { CpuInfo::kX86FeatureXSAVE           , "XSAVE"                },
-    { CpuInfo::kX86FeatureXSAVEC          , "XSAVEC"               },
-    { CpuInfo::kX86FeatureXSAVES          , "XSAVES"               },
-    { CpuInfo::kX86FeatureXSAVEOPT        , "XSAVEOPT"             },
-    { CpuInfo::kX86FeatureOSXSAVE         , "OSXSAVE"              },
-    { CpuInfo::kX86FeatureAVX             , "AVX"                  },
-    { CpuInfo::kX86FeatureAVX2            , "AVX2"                 },
-    { CpuInfo::kX86FeatureF16C            , "F16C"                 },
-    { CpuInfo::kX86FeatureFMA             , "FMA"                  },
-    { CpuInfo::kX86FeatureFMA4            , "FMA4"                 },
-    { CpuInfo::kX86FeatureXOP             , "XOP"                  },
-    { CpuInfo::kX86FeatureBMI             , "BMI"                  },
-    { CpuInfo::kX86FeatureBMI2            , "BMI2"                 },
-    { CpuInfo::kX86FeatureADX             , "ADX"                  },
-    { CpuInfo::kX86FeatureTBM             , "TBM"                  },
-    { CpuInfo::kX86FeatureMPX             , "MPX"                  },
-    { CpuInfo::kX86FeatureHLE             , "HLE"                  },
-    { CpuInfo::kX86FeatureRTM             , "RTM"                  },
-    { CpuInfo::kX86FeatureTSX             , "TSX"                  },
-    { CpuInfo::kX86FeatureERMS            , "ERMS"                 },
-    { CpuInfo::kX86FeatureFSGSBASE        , "FSGSBASE"             },
-    { CpuInfo::kX86FeatureAVX512_F        , "AVX512-F"             },
-    { CpuInfo::kX86FeatureAVX512_CDI      , "AVX512-CDI"           },
-    { CpuInfo::kX86FeatureAVX512_PFI      , "AVX512-PFI"           },
-    { CpuInfo::kX86FeatureAVX512_ERI      , "AVX512-ERI"           },
-    { CpuInfo::kX86FeatureAVX512_DQ       , "AVX512-DQ"            },
-    { CpuInfo::kX86FeatureAVX512_BW       , "AVX512-BW"            },
-    { CpuInfo::kX86FeatureAVX512_VL       , "AVX512-VL"            },
-    { CpuInfo::kX86FeatureAVX512_IFMA     , "AVX512-IFMA"          },
-    { CpuInfo::kX86FeatureAVX512_VBMI     , "AVX512-VBMI"          },
-    { CpuInfo::kX86FeatureAVX512_VPOPCNTDQ, "AVX512-VPOPCNTDQ"     },
-    { CpuInfo::kX86FeatureAVX512_4FMAPS   , "AVX512-4FMAPS"        },
-    { CpuInfo::kX86FeatureAVX512_4VNNIW   , "AVX512-4VNNIW"        }
-  };
-
-  INFO("X86 Specific:");
-  INFO("  Processor Type          : %u", cpu.getX86ProcessorType());
-  INFO("  Brand Index             : %u", cpu.getX86BrandIndex());
-  INFO("  CL Flush Cache Line     : %u", cpu.getX86FlushCacheLineSize());
-  INFO("  Max logical Processors  : %u", cpu.getX86MaxLogicalProcessors());
-  INFO("");
-
-  INFO("X86 Features:");
-  dumpCpuFeatures(cpu, x86FeaturesList, ASMJIT_ARRAY_SIZE(x86FeaturesList));
-  INFO("");
-#endif
+#endif // !ASMJIT_NO_LOGGING
 }
 
 // ============================================================================
@@ -166,93 +90,100 @@ static void dumpCpu(void) {
 // ============================================================================
 
 #define DUMP_TYPE(...) \
-  INFO("  %-26s: %u", #__VA_ARGS__, static_cast<uint32_t>(sizeof(__VA_ARGS__)))
+  INFO("  %-26s: %u", #__VA_ARGS__, uint32_t(sizeof(__VA_ARGS__)))
 
-static void dumpSizeOf(void) {
-  INFO("Size of built-ins:");
-  DUMP_TYPE(int8_t);
-  DUMP_TYPE(int16_t);
-  DUMP_TYPE(int32_t);
-  DUMP_TYPE(int64_t);
-  DUMP_TYPE(int);
-  DUMP_TYPE(long);
-  DUMP_TYPE(size_t);
-  DUMP_TYPE(intptr_t);
-  DUMP_TYPE(float);
-  DUMP_TYPE(double);
-  DUMP_TYPE(void*);
+static void dumpSizeOf(void) noexcept {
+  INFO("Size of C++ types:");
+    DUMP_TYPE(int8_t);
+    DUMP_TYPE(int16_t);
+    DUMP_TYPE(int32_t);
+    DUMP_TYPE(int64_t);
+    DUMP_TYPE(int);
+    DUMP_TYPE(long);
+    DUMP_TYPE(size_t);
+    DUMP_TYPE(intptr_t);
+    DUMP_TYPE(float);
+    DUMP_TYPE(double);
+    DUMP_TYPE(void*);
   INFO("");
 
-  INFO("Size of Base:");
-  DUMP_TYPE(Assembler);
-  DUMP_TYPE(CodeBuffer);
-  DUMP_TYPE(CodeEmitter);
-  DUMP_TYPE(CodeHolder);
-  DUMP_TYPE(ConstPool);
-  DUMP_TYPE(LabelEntry);
-  DUMP_TYPE(RelocEntry);
-  DUMP_TYPE(Runtime);
-  DUMP_TYPE(SectionEntry);
-  DUMP_TYPE(StringBuilder);
-  DUMP_TYPE(Zone);
-  DUMP_TYPE(ZoneHeap);
-  DUMP_TYPE(ZoneHash<ZoneHashNode>);
-  DUMP_TYPE(ZoneList<void*>);
-  DUMP_TYPE(ZoneVector<void*>);
+  INFO("Size of base classes:");
+    DUMP_TYPE(BaseAssembler);
+    DUMP_TYPE(BaseEmitter);
+    DUMP_TYPE(CodeBuffer);
+    DUMP_TYPE(CodeHolder);
+    DUMP_TYPE(ConstPool);
+    DUMP_TYPE(LabelEntry);
+    DUMP_TYPE(RelocEntry);
+    DUMP_TYPE(Section);
+    DUMP_TYPE(String);
+    DUMP_TYPE(Target);
+    DUMP_TYPE(Zone);
+    DUMP_TYPE(ZoneAllocator);
+    DUMP_TYPE(ZoneBitVector);
+    DUMP_TYPE(ZoneHashNode);
+    DUMP_TYPE(ZoneHash<ZoneHashNode>);
+    DUMP_TYPE(ZoneList<int>);
+    DUMP_TYPE(ZoneVector<int>);
   INFO("");
 
-  INFO("Size of Operand:");
-  DUMP_TYPE(Operand);
-  DUMP_TYPE(Reg);
-  DUMP_TYPE(Mem);
-  DUMP_TYPE(Imm);
-  DUMP_TYPE(Label);
+  INFO("Size of operand classes:");
+    DUMP_TYPE(Operand);
+    DUMP_TYPE(BaseReg);
+    DUMP_TYPE(BaseMem);
+    DUMP_TYPE(Imm);
+    DUMP_TYPE(Label);
   INFO("");
 
-  INFO("Size of Func:");
-  DUMP_TYPE(CallConv);
-  DUMP_TYPE(FuncSignature);
-  DUMP_TYPE(FuncDetail);
-  DUMP_TYPE(FuncDetail::Value);
-  DUMP_TYPE(FuncArgsMapper);
-  DUMP_TYPE(FuncArgsMapper::Value);
-  DUMP_TYPE(FuncFrameInfo);
-  DUMP_TYPE(FuncFrameLayout);
-
-  INFO("Size of CodeBuilder:");
-  DUMP_TYPE(CodeBuilder);
-  DUMP_TYPE(CBNode);
-  DUMP_TYPE(CBInst);
-  DUMP_TYPE(CBJump);
-  DUMP_TYPE(CBData);
-  DUMP_TYPE(CBAlign);
-  DUMP_TYPE(CBLabel);
-  DUMP_TYPE(CBComment);
-  DUMP_TYPE(CBSentinel);
-
-#if !defined(ASMJIT_DISABLE_COMPILER)
-  INFO("Size of CodeCompiler:");
-  DUMP_TYPE(CodeCompiler);
-  DUMP_TYPE(CCFunc);
-  DUMP_TYPE(CCFuncRet);
-  DUMP_TYPE(CCFuncCall);
+  INFO("Size of function classes:");
+    DUMP_TYPE(CallConv);
+    DUMP_TYPE(FuncFrame);
+    DUMP_TYPE(FuncValue);
+    DUMP_TYPE(FuncDetail);
+    DUMP_TYPE(FuncSignature);
+    DUMP_TYPE(FuncArgsAssignment);
   INFO("");
-#endif // !ASMJIT_DISABLE_COMPILER
 
-#if defined(ASMJIT_BUILD_X86)
-  INFO("Size of X86-Backend:");
-  DUMP_TYPE(X86Assembler);
-#if !defined(ASMJIT_DISABLE_COMPILER)
-  DUMP_TYPE(X86Compiler);
-#endif // !ASMJIT_DISABLE_COMPILER
-  DUMP_TYPE(X86Inst);
-  DUMP_TYPE(X86Inst::CommonData);
-  DUMP_TYPE(X86Inst::OperationData);
-  DUMP_TYPE(X86Inst::SseToAvxData);
-  DUMP_TYPE(X86Inst::ISignature);
-  DUMP_TYPE(X86Inst::OSignature);
+#if !defined(ASMJIT_NO_BUILDER)
+  INFO("Size of builder classes:");
+    DUMP_TYPE(BaseBuilder);
+    DUMP_TYPE(BaseNode);
+    DUMP_TYPE(InstNode);
+    DUMP_TYPE(InstExNode);
+    DUMP_TYPE(AlignNode);
+    DUMP_TYPE(LabelNode);
+    DUMP_TYPE(EmbedDataNode);
+    DUMP_TYPE(EmbedLabelNode);
+    DUMP_TYPE(ConstPoolNode);
+    DUMP_TYPE(CommentNode);
+    DUMP_TYPE(SentinelNode);
   INFO("");
-#endif // ASMJIT_BUILD_X86
+#endif
+
+#if !defined(ASMJIT_NO_COMPILER)
+  INFO("Size of compiler classes:");
+    DUMP_TYPE(BaseCompiler);
+    DUMP_TYPE(FuncNode);
+    DUMP_TYPE(FuncRetNode);
+    DUMP_TYPE(InvokeNode);
+  INFO("");
+#endif
+
+#if !defined(ASMJIT_NO_X86)
+  INFO("Size of x86-specific classes:");
+    DUMP_TYPE(x86::Assembler);
+    #if !defined(ASMJIT_NO_BUILDER)
+    DUMP_TYPE(x86::Builder);
+    #endif
+    #if !defined(ASMJIT_NO_COMPILER)
+    DUMP_TYPE(x86::Compiler);
+    #endif
+    DUMP_TYPE(x86::InstDB::InstInfo);
+    DUMP_TYPE(x86::InstDB::CommonInfo);
+    DUMP_TYPE(x86::InstDB::OpSignature);
+    DUMP_TYPE(x86::InstDB::InstSignature);
+  INFO("");
+#endif
 }
 
 #undef DUMP_TYPE
@@ -261,12 +192,25 @@ static void dumpSizeOf(void) {
 // [Main]
 // ============================================================================
 
-static void onBeforeRun(void) {
+static void onBeforeRun(void) noexcept {
   dumpCpu();
   dumpSizeOf();
 }
 
 int main(int argc, const char* argv[]) {
-  INFO("AsmJit Unit-Test\n\n");
+#if defined(ASMJIT_BUILD_DEBUG)
+  const char buildType[] = "Debug";
+#else
+  const char buildType[] = "Release";
+#endif
+
+  INFO("AsmJit Unit-Test v%u.%u.%u [Arch=%s] [Mode=%s]\n\n",
+    unsigned((ASMJIT_LIBRARY_VERSION >> 16)       ),
+    unsigned((ASMJIT_LIBRARY_VERSION >>  8) & 0xFF),
+    unsigned((ASMJIT_LIBRARY_VERSION      ) & 0xFF),
+    archToString(Environment::kArchHost),
+    buildType
+  );
+
   return BrokenAPI::run(argc, argv, onBeforeRun);
 }
