@@ -110,5 +110,11 @@
     <Resource Include="Icons\close-button.png" />
     <Resource Include="Icons\minus-sign.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\shellcodev.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\cyber-attackwhite.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

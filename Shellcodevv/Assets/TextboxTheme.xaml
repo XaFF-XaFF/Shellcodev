@@ -11,7 +11,7 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border
                         CornerRadius="2"
-                        Background="Transparent"
+                        Background="#333333"
                         Width="{TemplateBinding Width}"
                         Height="{TemplateBinding Height}"
                         BorderBrush="White"
