@@ -9,6 +9,7 @@ namespace Shellcodev.Forms
     public partial class Main : Form
     {
         private static int previousIndex;
+
         private static Main instance;
         public static Main ReturnInstance()
         {
@@ -16,8 +17,8 @@ namespace Shellcodev.Forms
         }
 
         //TODO: Show registers value at runtime
+        //      Make instruction handler handle on main process
         //      Repair gridview index lenght, 2 digit number looks like 1 digit number
-        //      After applying changes select the last row
         //      https://github.com/asmjit/asmjit/issues/27
 
         public Main()
@@ -26,8 +27,8 @@ namespace Shellcodev.Forms
             instance = this;
             instructionGrid.AllowUserToAddRows = false;
 
-            Registers reg = new Registers();
-            reg.SetRegisters();
+            AssemblyHandler handler = new AssemblyHandler();
+            handler.SetRegisters(null);
         }
 
         public void ByteAppender(string bytes)
@@ -83,6 +84,8 @@ namespace Shellcodev.Forms
                 return;
 
             new Instruction(instructionTxt.Text);
+
+            instructionGrid.CurrentCell = instructionGrid[0, instructionGrid.RowCount - 1];
         }
 
         private void instructionTxt_KeyDown(object sender, KeyEventArgs e)
@@ -97,46 +100,45 @@ namespace Shellcodev.Forms
             }
         }
 
-        //Repair
+
         private void instructionGrid_SelectionChanged(object sender, EventArgs e)
         {
             int index = instructionGrid.CurrentCell.RowIndex;
-            Console.WriteLine("Selection number: " + index);
+            string nullbyte = "00";
 
-            //Repair
-            for(int i = 0; i < bytesBox.Lines.Count(); i++)
+            if (bytesBox.Lines.Count() < 1)
+                return;
+
+            int length = bytesBox.Lines[index].Length;
+            int start = bytesBox.GetFirstCharIndexFromLine(index);
+
+            if (index != previousIndex)
             {
-                if(index == i)
+                int prevLength = bytesBox.Lines[previousIndex].Length;
+                int prevStart = bytesBox.GetFirstCharIndexFromLine(previousIndex);
+
+                bytesBox.Select(prevStart, prevLength);
+                bytesBox.SelectionColor = Color.Black;
+            }
+            
+            if(bytesBox.Lines[previousIndex].Contains(nullbyte))
+            {
+                int selectStart = bytesBox.SelectionStart;
+
+                while ((previousIndex = bytesBox.Text.IndexOf("00", (previousIndex + 1))) != -1)
                 {
-                    if(previousIndex != i)
-                    {
-                        int searchForPrevius = bytesBox.Text.IndexOf(bytesBox.Lines[previousIndex]);
-                        bytesBox.Select(searchForPrevius, bytesBox.Lines[previousIndex].Length);
-                        bytesBox.SelectionColor = Color.Black;
+                    bytesBox.Select(previousIndex, "00".Length);
+                    bytesBox.SelectionColor = Color.Red;
 
-                        if(bytesBox.Lines[previousIndex].Contains("00"))
-                        {
-                            int selectStart = bytesBox.SelectionStart;
-
-                            while ((index = bytesBox.Text.IndexOf("00", (index + 1))) != -1)
-                            {
-                                bytesBox.Select((index + 0), "00".Length);
-                                bytesBox.SelectionColor = Color.Red;
-                                bytesBox.Select(selectStart, 0);
-                                bytesBox.SelectionColor = Color.Black;
-                            }
-                        }
-                    }
-
-                    previousIndex = i;
-                    int search = bytesBox.Text.IndexOf(bytesBox.Lines[i]);
-                    bytesBox.Select(search, bytesBox.Lines[i].Length);
-                    bytesBox.SelectionColor = Color.Blue;
+                    bytesBox.Select(selectStart, 0);
+                    bytesBox.SelectionColor = Color.Black;
                 }
             }
 
-            int lastRow = instructionGrid.Rows.Count - 1;
-            instructionGrid.Rows[lastRow].Cells["Instruction"].Selected = true;
+            bytesBox.Select(start, length);
+            bytesBox.SelectionColor = Color.Blue;
+
+            previousIndex = index;
         }
 
         private void instructionGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)

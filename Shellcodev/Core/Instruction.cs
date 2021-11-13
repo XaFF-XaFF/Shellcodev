@@ -9,7 +9,6 @@ namespace Shellcodev
 {
     public class InstructionConverter
     {
-        public bool bitwise = false;
         private string EncodeValues(string instructionPart, bool small)
         {
             byte[] bytes = Encoding.Default.GetBytes(instructionPart);
@@ -40,7 +39,6 @@ namespace Shellcodev
                         int res = value ^ key;
                         string hexResult = res.ToString("X");
 
-                        bitwise = true;
                         return "xor" + "0x" + hexResult;
                     }
                     else
@@ -122,10 +120,9 @@ namespace Shellcodev
                 string hex = parser.GetAddress(split[1], split[2]);
 
                 int rows = main.instructionGrid.Rows.Add(rowId);
-                DataGridViewRow row = main.instructionGrid.Rows[rows];
 
+                DataGridViewRow row = main.instructionGrid.Rows[rows];
                 row.Cells["Instruction"].Value = split[0] + hex;
-                row.HeaderCell.Value = (row.Index + 1).ToString();
 
                 tempBytes = handler.Assembler(split[0] + hex);
                 main.ByteAppender(tempBytes);
@@ -133,13 +130,14 @@ namespace Shellcodev
             else
             {
                 int rows = main.instructionGrid.Rows.Add(rowId);
-                DataGridViewRow row = main.instructionGrid.Rows[rows];
 
+                DataGridViewRow row = main.instructionGrid.Rows[rows];
                 row.Cells["Instruction"].Value = instruction;
-                row.HeaderCell.Value = (row.Index + 1).ToString();
 
                 tempBytes = handler.Assembler(instruction);
                 main.ByteAppender(tempBytes);
+
+
             }
         }
     }

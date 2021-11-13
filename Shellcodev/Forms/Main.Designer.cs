@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.instructionGrid = new System.Windows.Forms.DataGridView();
-            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.instructionTxt = new System.Windows.Forms.TextBox();
             this.addInstructionBtn = new System.Windows.Forms.Button();
             this.bytesBox = new System.Windows.Forms.RichTextBox();
@@ -53,6 +52,7 @@
             this.cRBtn = new System.Windows.Forms.RadioButton();
             this.csRBtn = new System.Windows.Forms.RadioButton();
             this.generateBtn = new System.Windows.Forms.Button();
+            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.instructionGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -69,13 +69,6 @@
             this.instructionGrid.TabIndex = 0;
             this.instructionGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.instructionGrid_CellEndEdit);
             this.instructionGrid.SelectionChanged += new System.EventHandler(this.instructionGrid_SelectionChanged);
-            // 
-            // Instruction
-            // 
-            this.Instruction.HeaderText = "Instruction";
-            this.Instruction.MinimumWidth = 6;
-            this.Instruction.Name = "Instruction";
-            this.Instruction.Width = 328;
             // 
             // instructionTxt
             // 
@@ -308,6 +301,14 @@
             this.generateBtn.UseVisualStyleBackColor = true;
             this.generateBtn.Click += new System.EventHandler(this.generateBtn_Click);
             // 
+            // Instruction
+            // 
+            this.Instruction.HeaderText = "Instruction";
+            this.Instruction.MinimumWidth = 6;
+            this.Instruction.Name = "Instruction";
+            this.Instruction.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Instruction.Width = 328;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -358,7 +359,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Instruction;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button testerBldBtn;
@@ -373,5 +373,6 @@
         private System.Windows.Forms.RadioButton csRBtn;
         private System.Windows.Forms.Button generateBtn;
         public System.Windows.Forms.RichTextBox pointersBox;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Instruction;
     }
 }

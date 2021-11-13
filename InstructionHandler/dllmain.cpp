@@ -1,12 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "ihandler.h"
-#include <asmjit/asmjit.h>
-#include <asmtk/asmtk.h>
 
 using namespace asmjit;
 using namespace asmtk;
 
 typedef int (*Func)(void);
+static contexts_t ctx = { 0 };
+static registers_t reg = { 0 };
 
 const char* AssembleInstructions(const char* instruction)
 {
@@ -38,4 +38,23 @@ const char* AssembleInstructions(const char* instruction)
 		sprintf((char*)&result[i * 2], "%02x", data[i]);
 
 	return (const char*)result;
+}
+
+// CODE USED FROM WinREPL
+// https://github.com/zerosum0x0/WinREPL
+registers_t* GetRegisters(const char* instruction)
+{
+	if (!Runner(&ctx))
+		return NULL;
+
+	if (instruction == NULL)
+	{
+		InitRegisters(&ctx, &reg);
+		return &reg;
+	}
+
+	Instructions(&ctx, instruction);
+	InitRegisters(&ctx, &reg);
+
+	return &reg;
 }

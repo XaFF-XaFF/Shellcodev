@@ -180,6 +180,12 @@
     <ClCompile Include="..\..\asmtk\src\asmtk\asmparser.cpp">
       <Filter>Header Files\asmtk</Filter>
     </ClCompile>
+    <ClCompile Include="setup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="eval.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ihandler.h">

@@ -6,8 +6,25 @@ namespace Shellcodev
 {
     class API
     {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Registers
+        {
+            public int eax;
+            public int ebx;
+            public int ecx;
+            public int edx;
+            public int esi;
+            public int edi;
+            public int eip;
+            public int esp;
+            public int ebp;
+        }
+
         [DllImport("instrHandler_x86.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr AssembleInstructions(string instruction);
+
+        [DllImport("instrHandler_x86.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr GetRegisters(string instruction);
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string name);
@@ -51,6 +68,19 @@ namespace Shellcodev
             }
 
             return temp;
+        }
+
+        private void AppendRegisters(API.Registers registers)
+        {
+
+        }
+
+        public void SetRegisters(string instruction)
+        {
+            IntPtr pointer = API.GetRegisters(instruction);
+            var registers = Marshal.PtrToStructure<API.Registers>(pointer);
+
+            Console.WriteLine("EIP REGISTER : {0}", registers.eip);
         }
     }
 
