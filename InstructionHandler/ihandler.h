@@ -38,7 +38,7 @@ extern "C"
 {
 #endif
 	__declspec(dllexport) const char* AssembleInstructions(const char* instruction);
-	__declspec(dllexport) registers_t* GetRegisters(const char* instruction);
+	__declspec(dllexport) registers_t* GetRegisters(const char* instruction, PROCESS_INFORMATION* pi);
 
 #if defined (__cplusplus)
 }

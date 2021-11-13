@@ -2,19 +2,6 @@
 
 BOOL set_debugee(contexts_t* ctx)
 {
-    STARTUPINFO si = { 0 };
-    TCHAR fileName[MAX_PATH] = { 0 };
-
-    GetModuleFileName(NULL, fileName, MAX_PATH);
-
-    si.dwFlags = STARTF_USESHOWWINDOW;
-    si.wShowWindow = SW_HIDE;
-    si.cb = sizeof(si);
-
-    BOOL crtp = CreateProcess(fileName, NULL, NULL, NULL, FALSE, DEBUG_ONLY_THIS_PROCESS, NULL, NULL, &si, &ctx->pi);
-    if (!crtp)
-        return FALSE;
-
     CloseHandle(ctx->pi.hThread);
     if (!(ctx->pi.hThread = OpenThread(THREAD_SET_CONTEXT | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, FALSE, ctx->pi.dwThreadId)))
         return FALSE;

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Shellcodev
 {
-    class API
+    public class API
     {
+        #region Structures
         [StructLayout(LayoutKind.Sequential)]
         public struct Registers
         {
@@ -19,12 +21,64 @@ namespace Shellcodev
             public int esp;
             public int ebp;
         }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PROCESS_INFORMATION
+        {
+            public IntPtr hProcess;
+            public IntPtr hThread;
+            public Int32 dwProcessID;
+            public Int32 dwThreadID;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SECURITY_ATTRIBUTES
+        {
+            public Int32 Length;
+            public IntPtr lpSecurityDescriptor;
+            public bool bInheritHandle;
+        }
+
+        public enum SECURITY_IMPERSONATION_LEVEL
+        {
+            SecurityAnonymous,
+            SecurityIdentification,
+            SecurityImpersonation,
+            SecurityDelegation
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct STARTUPINFO
+        {
+            public Int32 cb;
+            public string lpReserved;
+            public string lpDesktop;
+            public string lpTitle;
+            public Int32 dwX;
+            public Int32 dwY;
+            public Int32 dwXSize;
+            public Int32 dwXCountChars;
+            public Int32 dwYCountChars;
+            public Int32 dwFillAttribute;
+            public Int32 dwFlags;
+            public Int16 wShowWindow;
+            public Int16 cbReserved2;
+            public IntPtr lpReserved2;
+            public IntPtr hStdInput;
+            public IntPtr hStdOutput;
+            public IntPtr hStdError;
+        }
+        #endregion
 
         [DllImport("instrHandler_x86.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr AssembleInstructions(string instruction);
 
         [DllImport("instrHandler_x86.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr GetRegisters(string instruction);
+        public static unsafe extern IntPtr GetRegisters(string instruction, PROCESS_INFORMATION* pi);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes,
+        bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment,
+        string lpCurrentDirectory, ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
+
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string name);
@@ -75,12 +129,11 @@ namespace Shellcodev
 
         }
 
-        public void SetRegisters(string instruction)
+        public unsafe void SetRegisters(string instruction, API.PROCESS_INFORMATION pi)
         {
-            IntPtr pointer = API.GetRegisters(instruction);
-            var registers = Marshal.PtrToStructure<API.Registers>(pointer);
-
-            Console.WriteLine("EIP REGISTER : {0}", registers.eip);
+            IntPtr pointer = API.GetRegisters(instruction, &pi);
+            API.Registers registers = Marshal.PtrToStructure<API.Registers>(pointer);
+            AppendRegisters(registers);
         }
     }
 

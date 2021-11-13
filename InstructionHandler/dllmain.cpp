@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "ihandler.h"
+#include <string>
 
 using namespace asmjit;
 using namespace asmtk;
@@ -42,8 +43,13 @@ const char* AssembleInstructions(const char* instruction)
 
 // CODE USED FROM WinREPL
 // https://github.com/zerosum0x0/WinREPL
-registers_t* GetRegisters(const char* instruction)
+registers_t* GetRegisters(const char* instruction, PROCESS_INFORMATION* pi)
 {
+	ctx.pi.hProcess = pi->hProcess;
+	ctx.pi.hThread = pi->hThread;
+	ctx.pi.dwProcessId = pi->dwProcessId;
+	ctx.pi.dwThreadId = pi->dwThreadId;
+
 	if (!Runner(&ctx))
 		return NULL;
 

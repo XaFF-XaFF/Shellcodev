@@ -9,6 +9,7 @@ namespace Shellcodev.Forms
     public partial class Main : Form
     {
         private static int previousIndex;
+        public static API.PROCESS_INFORMATION pi;
 
         private static Main instance;
         public static Main ReturnInstance()
@@ -17,9 +18,31 @@ namespace Shellcodev.Forms
         }
 
         //TODO: Show registers value at runtime
-        //      Make instruction handler handle on main process
         //      Repair gridview index lenght, 2 digit number looks like 1 digit number
         //      https://github.com/asmjit/asmjit/issues/27
+
+        private API.PROCESS_INFORMATION InitProcess()
+        {
+            API.STARTUPINFO si = new API.STARTUPINFO();
+            pi = new API.PROCESS_INFORMATION();
+
+            bool createproc = API.CreateProcess(
+                "C:\\Windows\\System32\\notepad.exe",
+                null,
+                IntPtr.Zero,
+                IntPtr.Zero,
+                false,
+                0x00000002, //Debug process
+                IntPtr.Zero,
+                null,
+                ref si, out pi);
+
+            if(!createproc)
+            {
+                MessageBox.Show("ERROR! CreateProcess Failed");
+            }
+            return pi;
+        }
 
         public Main()
         {
@@ -27,8 +50,8 @@ namespace Shellcodev.Forms
             instance = this;
             instructionGrid.AllowUserToAddRows = false;
 
-            AssemblyHandler handler = new AssemblyHandler();
-            handler.SetRegisters(null);
+            // Initialize process which will be used to debug assembly instructions
+            InitProcess();
         }
 
         public void ByteAppender(string bytes)
