@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.instructionGrid = new System.Windows.Forms.DataGridView();
+            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.instructionTxt = new System.Windows.Forms.TextBox();
             this.addInstructionBtn = new System.Windows.Forms.Button();
             this.bytesBox = new System.Windows.Forms.RichTextBox();
@@ -39,7 +40,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.indexesBox = new System.Windows.Forms.RichTextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.testerBldBtn = new System.Windows.Forms.Button();
             this.shlcTestBtn = new System.Windows.Forms.Button();
@@ -52,7 +53,6 @@
             this.cRBtn = new System.Windows.Forms.RadioButton();
             this.csRBtn = new System.Windows.Forms.RadioButton();
             this.generateBtn = new System.Windows.Forms.Button();
-            this.Instruction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.instructionGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -69,6 +69,14 @@
             this.instructionGrid.TabIndex = 0;
             this.instructionGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.instructionGrid_CellEndEdit);
             this.instructionGrid.SelectionChanged += new System.EventHandler(this.instructionGrid_SelectionChanged);
+            // 
+            // Instruction
+            // 
+            this.Instruction.HeaderText = "Instruction";
+            this.Instruction.MinimumWidth = 6;
+            this.Instruction.Name = "Instruction";
+            this.Instruction.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Instruction.Width = 328;
             // 
             // instructionTxt
             // 
@@ -163,17 +171,17 @@
             this.label4.TabIndex = 5;
             this.label4.Text = "Instructions";
             // 
-            // richTextBox1
+            // indexesBox
             // 
-            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.richTextBox1.Location = new System.Drawing.Point(47, 98);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.richTextBox1.Multiline = false;
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(247, 26);
-            this.richTextBox1.TabIndex = 4;
-            this.richTextBox1.Text = "EDI: 00000000 ESI: 00000000";
+            this.indexesBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.indexesBox.Location = new System.Drawing.Point(47, 98);
+            this.indexesBox.Margin = new System.Windows.Forms.Padding(4);
+            this.indexesBox.Multiline = false;
+            this.indexesBox.Name = "indexesBox";
+            this.indexesBox.ReadOnly = true;
+            this.indexesBox.Size = new System.Drawing.Size(247, 26);
+            this.indexesBox.TabIndex = 4;
+            this.indexesBox.Text = "EDI: 00000000 ESI: 00000000";
             // 
             // label5
             // 
@@ -301,14 +309,6 @@
             this.generateBtn.UseVisualStyleBackColor = true;
             this.generateBtn.Click += new System.EventHandler(this.generateBtn_Click);
             // 
-            // Instruction
-            // 
-            this.Instruction.HeaderText = "Instruction";
-            this.Instruction.MinimumWidth = 6;
-            this.Instruction.Name = "Instruction";
-            this.Instruction.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Instruction.Width = 328;
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -326,7 +326,7 @@
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.indexesBox);
             this.Controls.Add(this.pointersBox);
             this.Controls.Add(this.registersBox);
             this.Controls.Add(this.bytesBox);
@@ -354,12 +354,10 @@
         private System.Windows.Forms.Button addInstructionBtn;
         public System.Windows.Forms.DataGridView instructionGrid;
         public System.Windows.Forms.RichTextBox bytesBox;
-        private System.Windows.Forms.RichTextBox registersBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button testerBldBtn;
         private System.Windows.Forms.Button shlcTestBtn;
@@ -374,5 +372,7 @@
         private System.Windows.Forms.Button generateBtn;
         public System.Windows.Forms.RichTextBox pointersBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn Instruction;
+        public System.Windows.Forms.RichTextBox indexesBox;
+        public System.Windows.Forms.RichTextBox registersBox;
     }
 }

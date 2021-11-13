@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Shellcodev.Forms;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -124,17 +126,76 @@ namespace Shellcodev
             return temp;
         }
 
-        private void AppendRegisters(API.Registers registers)
+        #region Registers
+        private void AppendPointers(object[] pointers)
         {
+            List<string> list = new List<string>();
+            string[] registers = { "EIP: ", "ESP: ", "EBP: " };
+            var main = Main.ReturnInstance();
 
+            for (int i = 0; i < pointers.Length; i++)
+            {
+                int toHex = Convert.ToInt32(pointers[i]);
+                string hex = toHex.ToString("X8");
+                list.Add(registers[i] + hex);
+            }
+
+            string str = string.Join(" ", list);
+            main.pointersBox.Text = str;
+        }
+
+        private void AppendIndexes(object[] indexes)
+        {
+            List<string> list = new List<string>();
+            string[] registers = { "EDI: ", "ESI: " };
+            var main = Main.ReturnInstance();
+
+            for(int i = 0; i < indexes.Length; i++)
+            {
+                int toHex = Convert.ToInt32(indexes[i]);
+                string hex = toHex.ToString("X8");
+                list.Add(registers[i] + hex);
+            }
+
+            string str = string.Join(" ", list);
+            main.indexesBox.Text = str;
+        }
+
+        private void AppendRegisters(object[] registers)
+        {
+            List<string> list = new List<string>();
+            string[] regs = { "EAX: ", "EBX: ", "ECX: ", "EDX: " };
+            var main = Main.ReturnInstance();
+
+            for (int i = 0; i < registers.Length; i++)
+            {
+                int toHex = Convert.ToInt32(registers[i]);
+                string hex = toHex.ToString("X8");
+                list.Add(regs[i] + hex);
+            }
+
+            string str = string.Join(" ", list);
+            main.registersBox.Text = str;
+        }
+
+        private void Appender(API.Registers registers)
+        {
+            object[] pointers = { registers.eip, registers.esp, registers.ebp };
+            object[] indexes  = { registers.edi, registers.esi };
+            object[] regs     = { registers.eax, registers.ebx, registers.ecx, registers.edx };
+
+            AppendPointers(pointers);
+            AppendIndexes(indexes);
+            AppendRegisters(regs);
         }
 
         public unsafe void SetRegisters(string instruction, API.PROCESS_INFORMATION pi)
         {
             IntPtr pointer = API.GetRegisters(instruction, &pi);
             API.Registers registers = Marshal.PtrToStructure<API.Registers>(pointer);
-            AppendRegisters(registers);
+            Appender(registers);
         }
+        #endregion
     }
 
     public class ShellcodeLoader

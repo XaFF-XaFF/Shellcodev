@@ -51,7 +51,9 @@ namespace Shellcodev.Forms
             instructionGrid.AllowUserToAddRows = false;
 
             // Initialize process which will be used to debug assembly instructions
+            AssemblyHandler handler = new AssemblyHandler();
             InitProcess();
+            handler.SetRegisters(null, pi);
         }
 
         public void ByteAppender(string bytes)
