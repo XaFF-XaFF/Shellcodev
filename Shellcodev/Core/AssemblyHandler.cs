@@ -80,7 +80,6 @@ namespace Shellcodev
         bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment,
         string lpCurrentDirectory, ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
 
-
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string name);
 
@@ -116,9 +115,9 @@ namespace Shellcodev
 
             //Starting from 0, place space every second byte
             string temp = null;
-            for(int i = 0; i < bytes.Length; i++)
+            for (int i = 0; i < bytes.Length; i++)
             {
-                if(i % 2 != 0)
+                if (i % 2 != 0)
                     temp += bytes[i] + " ";
                 else
                     temp += bytes[i];
@@ -151,7 +150,7 @@ namespace Shellcodev
             string[] registers = { "EDI: ", "ESI: " };
             var main = Main.ReturnInstance();
 
-            for(int i = 0; i < indexes.Length; i++)
+            for (int i = 0; i < indexes.Length; i++)
             {
                 int toHex = Convert.ToInt32(indexes[i]);
                 string hex = toHex.ToString("X8");
@@ -182,8 +181,8 @@ namespace Shellcodev
         private void Appender(API.Registers registers)
         {
             object[] pointers = { registers.eip, registers.esp, registers.ebp };
-            object[] indexes  = { registers.edi, registers.esi };
-            object[] regs     = { registers.eax, registers.ebx, registers.ecx, registers.edx };
+            object[] indexes = { registers.edi, registers.esi };
+            object[] regs = { registers.eax, registers.ebx, registers.ecx, registers.edx };
 
             AppendPointers(pointers);
             AppendIndexes(indexes);

@@ -26,7 +26,7 @@ namespace Shellcodev.Forms
             pi = new API.PROCESS_INFORMATION();
 
             bool createproc = API.CreateProcess(
-                "Shellcodev.exe",
+                AppDomain.CurrentDomain.FriendlyName, // Get current executable name
                 null,
                 IntPtr.Zero,
                 IntPtr.Zero,
@@ -36,9 +36,10 @@ namespace Shellcodev.Forms
                 null,
                 ref si, out pi);
 
-            if(!createproc)
+            if (!createproc)
             {
                 MessageBox.Show("ERROR! CreateProcess Failed");
+                this.Close();
             }
             return pi;
         }
@@ -117,7 +118,7 @@ namespace Shellcodev.Forms
 
         private void instructionTxt_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 addInstructionBtn_Click(sender, e);
                 instructionTxt.SelectAll();
@@ -147,8 +148,8 @@ namespace Shellcodev.Forms
                 bytesBox.Select(prevStart, prevLength);
                 bytesBox.SelectionColor = Color.Black;
             }
-            
-            if(bytesBox.Lines[previousIndex].Contains(nullbyte))
+
+            if (bytesBox.Lines[previousIndex].Contains(nullbyte))
             {
                 int selectStart = bytesBox.SelectionStart;
 
@@ -181,13 +182,13 @@ namespace Shellcodev.Forms
                 try //Editing empty row and setting it to null
                 { instructionGrid.Rows.Remove(row); }
                 catch (Exception)
-                { return; }  
-                
+                { return; }
+
                 //Resort indexes
-                for(int i = editedRow;  i < instructionGrid.Rows.Count; i++)
+                for (int i = editedRow; i < instructionGrid.Rows.Count; i++)
                 {
                     DataGridViewRow dgvr = instructionGrid.Rows[i];
-                    if(dgvr.Cells[0].Value != null)
+                    if (dgvr.Cells[0].Value != null)
                         dgvr.HeaderCell.Value = (dgvr.Index + 1).ToString();
                 }
 
@@ -195,7 +196,7 @@ namespace Shellcodev.Forms
                 int startIndex = bytesBox.GetFirstCharIndexFromLine(editedRow);
                 int count = bytesBox.Lines[editedRow].Length;
 
-                if(editedRow < bytesBox.Lines.Length - 1)
+                if (editedRow < bytesBox.Lines.Length - 1)
                 {
                     count += bytesBox.GetFirstCharIndexFromLine(editedRow + 1) -
                         ((startIndex + count - 1) + 1);
@@ -216,7 +217,7 @@ namespace Shellcodev.Forms
         #region RadioButtons
         private void cRBtn_CheckedChanged(object sender, EventArgs e)
         {
-            if(csRBtn.Checked)
+            if (csRBtn.Checked)
                 csRBtn.Checked = false;
         }
 

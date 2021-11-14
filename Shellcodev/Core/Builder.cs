@@ -11,7 +11,7 @@ namespace Shellcodev.Core
     {
         private CompilerResults Generator(string stub, string payload, string path)
         {
-            var references = new[] { "System.dll","System.Runtime.InteropServices.dll" };
+            var references = new[] { "System.dll", "System.Runtime.InteropServices.dll" };
 
             CompilerParameters parameters = new CompilerParameters(references, path);
             parameters.GenerateExecutable = true;
@@ -43,7 +43,7 @@ namespace Shellcodev.Core
 
             CompilerResults results = Generator(stub, payload, path);
 
-            if(results.Errors.Count == 0)
+            if (results.Errors.Count == 0)
             {
                 MessageBox.Show("File build succeeded", "Shellcodev", MessageBoxButtons.OK);
             }
@@ -53,7 +53,7 @@ namespace Shellcodev.Core
                 string logPath = ErrorHandler(currentTime, results);
 
                 var dialogResult = MessageBox.Show("File build failed. Would you like to check log file?", "Shellcodev", MessageBoxButtons.YesNo);
-                switch(dialogResult)
+                switch (dialogResult)
                 {
                     case DialogResult.Yes:
                         Process.Start("notepad.exe", logPath);
@@ -75,7 +75,7 @@ namespace Shellcodev.Core
             File.Create(logPath).Close();
             StreamWriter file = new StreamWriter(logPath);
 
-            foreach(CompilerError error in results.Errors)
+            foreach (CompilerError error in results.Errors)
             {
                 Console.WriteLine(error.ErrorText);
                 file.WriteLine(error.ErrorText);

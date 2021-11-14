@@ -16,7 +16,7 @@ namespace Shellcodev
             string[] splited = hexString.Split('-');
 
             List<string> result = new List<string>();
-            for(int i = splited.Length - 1; i >= 0; i--)
+            for (int i = splited.Length - 1; i >= 0; i--)
                 result.Add(splited[i]);
 
             string temp = null;
@@ -27,9 +27,9 @@ namespace Shellcodev
             AssemblyHandler handler = new AssemblyHandler();
             string test = handler.Assembler("push 0x" + temp);
             string temp1 = null;
-            for(int i = 0; i < test.Length; i++)
+            for (int i = 0; i < test.Length; i++)
             {
-                if(temp1 != null && temp1.Length % 2 == 0)
+                if (temp1 != null && temp1.Length % 2 == 0)
                 {
                     if (temp1 == "00")
                     {
@@ -94,11 +94,11 @@ namespace Shellcodev
             string tempBytes = null;
 
             // Extract register from command
-            try 
-            { 
-                this.register = instruction.Substring(3, 4); 
+            try
+            {
+                this.register = instruction.Substring(3, 4);
             }
-            catch(Exception)
+            catch (Exception)
             { return; }
 
             // Check if instruction contains double quotes and if yes execute StringAssembler
@@ -111,7 +111,7 @@ namespace Shellcodev
                 parser.SnippetParser(main, register, bytes);
                 parser.SnippetAppender(main, register, bytes);
             }
-            else if(instruction.Contains("."))
+            else if (instruction.Contains("."))
             {
                 string[] split = instruction.Split('.');
                 if (split.Length < 3)

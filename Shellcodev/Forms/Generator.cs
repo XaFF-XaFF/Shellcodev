@@ -21,11 +21,11 @@ namespace Shellcodev.Forms
 
         private void CSFormat(string bytes)
         {
-            string[] byteArray = bytes.Split(new char[] {' ','\n'}, StringSplitOptions.RemoveEmptyEntries);
+            string[] byteArray = bytes.Split(new char[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            for(int i = 0; i < byteArray.Length; i++)
+            for (int i = 0; i < byteArray.Length; i++)
             {
-                if (i == byteArray.Length - 1) 
+                if (i == byteArray.Length - 1)
                     shellTxt.Text += "0x" + byteArray[i];
                 else
                     shellTxt.Text += "0x" + byteArray[i] + " ,";
