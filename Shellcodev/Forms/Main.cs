@@ -17,8 +17,7 @@ namespace Shellcodev.Forms
             return instance;
         }
 
-        //TODO: Show registers value at runtime
-        //      Repair gridview index lenght, 2 digit number looks like 1 digit number
+        //TODO: Show registers value at runtime (finished). Fix bugs
         //      https://github.com/asmjit/asmjit/issues/27
 
         private API.PROCESS_INFORMATION InitProcess()
@@ -27,7 +26,7 @@ namespace Shellcodev.Forms
             pi = new API.PROCESS_INFORMATION();
 
             bool createproc = API.CreateProcess(
-                "C:\\Windows\\System32\\notepad.exe",
+                "Shellcodev.exe",
                 null,
                 IntPtr.Zero,
                 IntPtr.Zero,
@@ -53,7 +52,10 @@ namespace Shellcodev.Forms
             // Initialize process which will be used to debug assembly instructions
             AssemblyHandler handler = new AssemblyHandler();
             InitProcess();
-            handler.SetRegisters(null, pi);
+
+            // Stabilization of registers
+            handler.SetRegisters("xor eax,eax", pi);
+            handler.SetRegisters("xor eax,eax", pi);
         }
 
         public void ByteAppender(string bytes)

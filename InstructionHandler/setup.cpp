@@ -1,35 +1,5 @@
 #include "ihandler.h"
 
-BOOL set_debugee(contexts_t* ctx)
-{
-    CloseHandle(ctx->pi.hThread);
-    if (!(ctx->pi.hThread = OpenThread(THREAD_SET_CONTEXT | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, FALSE, ctx->pi.dwThreadId)))
-        return FALSE;
-
-    while (TRUE)
-    {
-        DEBUG_EVENT dbg = { 0 };
-        if (!WaitForDebugEvent(&dbg, 1000))
-            break;
-
-        if (dbg.dwDebugEventCode == CREATE_PROCESS_DEBUG_EVENT)
-            CloseHandle(dbg.u.CreateProcessInfo.hFile);
-
-        if (dbg.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT)
-        {
-            if (dbg.u.LoadDll.hFile)
-                CloseHandle(dbg.u.LoadDll.hFile);
-        }
-
-        if (dbg.dwDebugEventCode == EXCEPTION_DEBUG_EVENT && dbg.dwThreadId == ctx->pi.dwThreadId)
-            break;
-
-        ContinueDebugEvent(dbg.dwProcessId, dbg.dwThreadId, DBG_CONTINUE);
-    }
-
-    return TRUE;
-}
-
 BOOL contexts_allocmem(contexts_t* ctx)
 {
     if (ctx->memSize == 0)

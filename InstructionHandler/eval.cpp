@@ -2,9 +2,6 @@
 
 BOOL Runner(contexts_t* ctx)
 {
-	if (!set_debugee(ctx))
-		return FALSE;
-
 	if (!contexts_allocmem(ctx))
 		return FALSE;
 
@@ -70,8 +67,6 @@ BOOL SetProcess(contexts_t* ctx, unsigned char* encode, size_t size)
 	DWORD dwOldProtect = 0;
 	SIZE_T nBytes;
 	CONTEXT context = { 0 };
-
-	//print asm
 
 	context.ContextFlags = CONTEXT_ALL;
 	if (!GetThreadContext(ctx->pi.hThread, &context))

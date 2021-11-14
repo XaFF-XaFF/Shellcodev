@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace Shellcodev
 {
@@ -112,6 +111,8 @@ namespace Shellcodev
             string bytes = Marshal.PtrToStringAnsi(pointer);
             if (bytes == "InvalidInstruction")
                 return "Error!: Invalid instruction.";
+
+            SetRegisters(instructions, Main.pi);
 
             //Starting from 0, place space every second byte
             string temp = null;

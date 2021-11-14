@@ -44,9 +44,9 @@ extern "C"
 }
 #endif
 
-BOOL set_debugee(contexts_t* ctx);
 BOOL contexts_allocmem(contexts_t* ctx);
 BOOL contexts(contexts_t* ctx);
 BOOL Runner(contexts_t* ctx);
 BOOL Instructions(contexts_t* ctx, const char* instruction);
+
 VOID InitRegisters(contexts_t* ctx, registers_t* registers);
