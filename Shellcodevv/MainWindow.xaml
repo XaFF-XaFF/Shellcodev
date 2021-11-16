@@ -37,7 +37,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <!--Buttons-->
+            <!--Exit Minimize buttons-->
 
             <Button
                 Style="{StaticResource ButtonTheme}"
