@@ -10,6 +10,7 @@ namespace Shellcodev.Forms
     {
         private static int previousIndex;
         public static API.PROCESS_INFORMATION pi;
+        public static API.Registers prevRegs;
 
         private static Main instance;
         public static Main ReturnInstance()
@@ -153,9 +154,9 @@ namespace Shellcodev.Forms
             {
                 int selectStart = bytesBox.SelectionStart;
 
-                while ((previousIndex = bytesBox.Text.IndexOf("00", (previousIndex + 1))) != -1)
+                while ((previousIndex = bytesBox.Text.IndexOf(nullbyte, (previousIndex + 1))) != -1)
                 {
-                    bytesBox.Select(previousIndex, "00".Length);
+                    bytesBox.Select(previousIndex, nullbyte.Length);
                     bytesBox.SelectionColor = Color.Red;
 
                     bytesBox.Select(selectStart, 0);
@@ -185,12 +186,12 @@ namespace Shellcodev.Forms
                 { return; }
 
                 //Resort indexes
-                for (int i = editedRow; i < instructionGrid.Rows.Count; i++)
-                {
-                    DataGridViewRow dgvr = instructionGrid.Rows[i];
-                    if (dgvr.Cells[0].Value != null)
-                        dgvr.HeaderCell.Value = (dgvr.Index + 1).ToString();
-                }
+                //for (int i = editedRow; i < instructionGrid.Rows.Count; i++)
+                //{
+                //    DataGridViewRow dgvr = instructionGrid.Rows[i];
+                //    if (dgvr.Cells[0].Value != null)
+                //        dgvr.HeaderCell.Value = (dgvr.Index + 1).ToString();
+                //}
 
                 //Remove line from textbox
                 int startIndex = bytesBox.GetFirstCharIndexFromLine(editedRow);

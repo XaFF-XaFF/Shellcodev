@@ -89,7 +89,7 @@ namespace Shellcodev
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
 
-        [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
@@ -161,7 +161,7 @@ namespace Shellcodev
             main.indexesBox.Text = str;
         }
 
-        private void AppendRegisters(object[] registers)
+        private void AppendRegisters(object[] registers, object[] pregs, string toClear)
         {
             List<string> list = new List<string>();
             string[] regs = { "EAX: ", "EBX: ", "ECX: ", "EDX: " };
@@ -169,31 +169,74 @@ namespace Shellcodev
 
             for (int i = 0; i < registers.Length; i++)
             {
-                int toHex = Convert.ToInt32(registers[i]);
-                string hex = toHex.ToString("X8");
-                list.Add(regs[i] + hex);
+                if ((int)registers[i] == 0 && (int)pregs[i] != 0)
+                {
+                    int toHex = Convert.ToInt32(pregs[i]);
+                    string hex = toHex.ToString("X8");
+                    list.Add(regs[i] + hex);
+                }
+                else if ((int)registers[i] != 0 && (int)pregs[i] != 0)
+                {
+                    if((int)registers[i] != 0)
+                    {
+                        int toHex = Convert.ToInt32(registers[i]);
+                        string hex = toHex.ToString("X8");
+                        list.Add(regs[i] + hex);
+                    }
+                    else
+                    {
+                        int toHex = Convert.ToInt32(pregs[i]);
+                        string hex = toHex.ToString("X8");
+                        list.Add(regs[i] + hex);
+                    }
+                }
+                else
+                {
+                    int toHex = Convert.ToInt32(registers[i]);
+                    string hex = toHex.ToString("X8");
+                    list.Add(regs[i] + hex);
+                }
             }
 
             string str = string.Join(" ", list);
             main.registersBox.Text = str;
         }
 
-        private void Appender(API.Registers registers)
+        private void Appender(API.Registers registers, API.Registers prevRegs, string toClear)
         {
             object[] pointers = { registers.eip, registers.esp, registers.ebp };
             object[] indexes = { registers.edi, registers.esi };
+
             object[] regs = { registers.eax, registers.ebx, registers.ecx, registers.edx };
+            object[] pregs = { prevRegs.eax, prevRegs.ebx, prevRegs.ecx, prevRegs.edx };
 
             AppendPointers(pointers);
             AppendIndexes(indexes);
-            AppendRegisters(regs);
+            AppendRegisters(regs, pregs, toClear);
+        }
+
+        private string ClearCheck(string instruction)
+        {
+            string[] split = instruction.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (split[0] == "xor" && split[1] == split[2]) // Clearing register
+            {
+                return split[1];
+            }
+
+            return null;
         }
 
         public unsafe void SetRegisters(string instruction, API.PROCESS_INFORMATION pi)
         {
             IntPtr pointer = API.GetRegisters(instruction, &pi);
             API.Registers registers = Marshal.PtrToStructure<API.Registers>(pointer);
-            Appender(registers);
+
+            string toClear = ClearCheck(instruction);
+
+            Appender(registers, Main.prevRegs, toClear);
+
+            Main.prevRegs = registers;
         }
         #endregion
     }

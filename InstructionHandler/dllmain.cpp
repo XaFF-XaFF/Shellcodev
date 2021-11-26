@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "ihandler.h"
-#include <string>
 
 using namespace asmjit;
 using namespace asmtk;
