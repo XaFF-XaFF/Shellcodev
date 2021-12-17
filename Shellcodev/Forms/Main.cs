@@ -19,8 +19,7 @@ namespace Shellcodev.Forms
             return instance;
         }
 
-        //TODO: Show registers value at runtime (finished). Fix bugs
-        //      https://github.com/asmjit/asmjit/issues/27
+        //TODO: https://github.com/asmjit/asmjit/issues/27
 
         private void InitProcess() //API.PROCESS_INFORMATION I
         {
