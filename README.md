@@ -24,4 +24,10 @@
                   into hex and encoded with little endian.
 ```
 
-### [TODO] Snippets examples
+### Snippets examples
+
+  <h4>String converter</h4>
+  <img align="center" src="https://github.com/XaFF-XaFF/Shellcodev/blob/master/readme/snippet1.gif?raw=true" width="1024"/>
+
+  <h4>Get DLL address</h4>
+  <img align="center" src="https://github.com/XaFF-XaFF/Shellcodev/blob/master/readme/dll.gif?raw=true" width="1024"/>
