@@ -127,104 +127,121 @@ namespace Shellcodev
         }
 
         #region Registers
-        private void AppendPointers(object[] pointers)
-        {
-            List<string> list = new List<string>();
-            string[] registers = { "EIP: ", "ESP: ", "EBP: " };
-            var main = Main.ReturnInstance();
 
-            for (int i = 0; i < pointers.Length; i++)
-            {
-                int toHex = Convert.ToInt32(pointers[i]);
-                string hex = toHex.ToString("X8");
-                list.Add(registers[i] + hex);
-            }
-
-            string str = string.Join(" ", list);
-            main.pointersBox.Text = str;
-        }
-
-        private void AppendIndexes(object[] indexes)
-        {
-            List<string> list = new List<string>();
-            string[] registers = { "EDI: ", "ESI: " };
-            var main = Main.ReturnInstance();
-
-            for (int i = 0; i < indexes.Length; i++)
-            {
-                int toHex = Convert.ToInt32(indexes[i]);
-                string hex = toHex.ToString("X8");
-                list.Add(registers[i] + hex);
-            }
-
-            string str = string.Join(" ", list);
-            main.indexesBox.Text = str;
-        }
-
-        private void AppendRegisters(object[] registers, object[] pregs, string toClear)
+        private void AppendRegisters(API.Registers registers)
         {
             List<string> list = new List<string>();
             string[] regs = { "EAX: ", "EBX: ", "ECX: ", "EDX: " };
+            object[] r = { registers.eax, registers.ebx, registers.ecx, registers.edx };
+
             var main = Main.ReturnInstance();
 
-            for (int i = 0; i < registers.Length; i++)
+
+            for(int i = 0; i < regs.Length; i++)
             {
-                if ((int)registers[i] == 0 && (int)pregs[i] != 0)
-                {
-                    int toHex = Convert.ToInt32(pregs[i]);
-                    string hex = toHex.ToString("X8");
-                    list.Add(regs[i] + hex);
-                }
-                else if ((int)registers[i] != 0 && (int)pregs[i] != 0)
-                {
-                    if((int)registers[i] != 0)
-                    {
-                        int toHex = Convert.ToInt32(registers[i]);
-                        string hex = toHex.ToString("X8");
-                        list.Add(regs[i] + hex);
-                    }
-                    else
-                    {
-                        int toHex = Convert.ToInt32(pregs[i]);
-                        string hex = toHex.ToString("X8");
-                        list.Add(regs[i] + hex);
-                    }
-                }
-                else
-                {
-                    int toHex = Convert.ToInt32(registers[i]);
-                    string hex = toHex.ToString("X8");
-                    list.Add(regs[i] + hex);
-                }
+                int toHex = Convert.ToInt32(r[i]);
+                string hex = toHex.ToString("X8");
+                list.Add(regs[i] + hex);
             }
 
             string str = string.Join(" ", list);
             main.registersBox.Text = str;
         }
 
-        private void Appender(API.Registers registers, API.Registers prevRegs, string toClear)
+        private void AppendIndexes(API.Registers registers)
         {
-            object[] pointers = { registers.eip, registers.esp, registers.ebp };
-            object[] indexes = { registers.edi, registers.esi };
+            List<string> list = new List<string>();
+            string[] indexes = { "EDI: ", "ESI: " };
+            object[] index = { registers.edi, registers.esi };
 
-            object[] regs = { registers.eax, registers.ebx, registers.ecx, registers.edx };
-            object[] pregs = { prevRegs.eax, prevRegs.ebx, prevRegs.ecx, prevRegs.edx };
+            var main = Main.ReturnInstance();
 
-            AppendPointers(pointers);
-            AppendIndexes(indexes);
-            AppendRegisters(regs, pregs, toClear);
-        }
-
-        private string ClearCheck(string instruction)
-        {
-            string[] split = instruction.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (split[0] == "xor" && split[1] == split[2]) // Clearing register
+            for(int i = 0; i<indexes.Length; i++)
             {
-                return split[1];
+                int toHex = Convert.ToInt32(index[i]);
+                string hex = toHex.ToString("X8");
+                list.Add(indexes[i] + hex);
             }
 
+            string str = string.Join(" ", list);
+            main.indexesBox.Text = str;
+        }
+
+        private void AppendPointers(API.Registers registers)
+        {
+            List<string> list = new List<string>();
+            string[] pointers = { "EIP: ", "ESP: ", "EBP: " };
+            object[] pointer = {registers.eip, registers.esp, registers.ebp };
+
+            var main = Main.ReturnInstance();
+
+            for(int i = 0; i<pointers.Length; i++)
+            {
+                int toHex = Convert.ToInt32(pointer[i]);
+                string hex = toHex.ToString("X8");
+                list.Add(pointers[i] + hex);
+            }
+
+            string str = string.Join(" ", list);
+            main.pointersBox.Text = str;
+        }
+
+        private string Clear(string instruction)
+        {
+            string[] split = instruction.Split(new char[] { ',', ' ' });
+
+            if (split[0] == "xor" && split[1] == split[2])
+                return split[1];
+
             return null;
+        }
+
+        // Absolute pain
+        private API.Registers Configure(API.Registers registers, API.Registers prevRegisters, string instruction)
+        {
+            string reg = Clear(instruction);
+
+            if (registers.eax != 0) prevRegisters.eax = registers.eax;
+            else if(registers.ebx != 0) prevRegisters.ebx = registers.ebx;
+            else if(registers.ecx != 0) prevRegisters.ecx = registers.ecx;
+            else if(registers.edx != 0) prevRegisters.edx = registers.edx;
+            else if(registers.esi != 0) prevRegisters.esi = registers.esi;
+            else if(registers.edi != 0) prevRegisters.edi = registers.edi;
+            else if(registers.ebp != 0) prevRegisters.ebp = registers.ebp;
+
+
+            prevRegisters.eip = registers.eip;
+            prevRegisters.esp = registers.esp;
+
+            switch (reg)
+            {
+                case "eax":
+                    prevRegisters.eax = 0;
+                    break;
+                case "ebx":
+                    prevRegisters.ebx = 0;
+                    break;
+                case "ecx":
+                    prevRegisters.ecx = 0;
+                    break;
+                case "edx":
+                    prevRegisters.edx = 0;
+                    break;
+                case "edi":
+                    prevRegisters.edi = 0;
+                    break;
+                case "esi":
+                    prevRegisters.esi = 0;
+                    break;
+                case "ebp":
+                    prevRegisters.ebp = 0;
+                    break;
+
+                default:
+                    break;
+            }
+
+            return prevRegisters;
         }
 
         public unsafe void SetRegisters(string instruction, API.PROCESS_INFORMATION pi)
@@ -232,11 +249,11 @@ namespace Shellcodev
             IntPtr pointer = API.GetRegisters(instruction, &pi);
             API.Registers registers = Marshal.PtrToStructure<API.Registers>(pointer);
 
-            string toClear = ClearCheck(instruction);
+            Main.registers = Configure(registers, Main.registers, instruction);
 
-            Appender(registers, Main.prevRegs, toClear);
-
-            Main.prevRegs = registers;
+            AppendRegisters(Main.registers);
+            AppendIndexes(Main.registers);
+            AppendPointers(Main.registers);
         }
         #endregion
     }

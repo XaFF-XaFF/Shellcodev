@@ -9,8 +9,9 @@ namespace Shellcodev.Forms
     public partial class Main : Form
     {
         private static int previousIndex;
+
         public static API.PROCESS_INFORMATION pi;
-        public static API.Registers prevRegs;
+        public static API.Registers registers;
 
         private static Main instance;
         public static Main ReturnInstance()
@@ -21,7 +22,7 @@ namespace Shellcodev.Forms
         //TODO: Show registers value at runtime (finished). Fix bugs
         //      https://github.com/asmjit/asmjit/issues/27
 
-        private API.PROCESS_INFORMATION InitProcess()
+        private void InitProcess() //API.PROCESS_INFORMATION I
         {
             API.STARTUPINFO si = new API.STARTUPINFO();
             pi = new API.PROCESS_INFORMATION();
@@ -42,7 +43,6 @@ namespace Shellcodev.Forms
                 MessageBox.Show("ERROR! CreateProcess Failed");
                 this.Close();
             }
-            return pi;
         }
 
         public Main()
@@ -57,7 +57,8 @@ namespace Shellcodev.Forms
 
             // Stabilization of registers
             handler.SetRegisters("xor eax,eax", pi);
-            handler.SetRegisters("xor eax,eax", pi);
+            handler.SetRegisters("xor ebx,ebx", pi);
+            handler.SetRegisters("xor ecx,ecx", pi);
         }
 
         public void ByteAppender(string bytes)

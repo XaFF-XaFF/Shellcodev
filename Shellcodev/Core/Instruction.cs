@@ -136,8 +136,6 @@ namespace Shellcodev
 
                 tempBytes = handler.Assembler(instruction);
                 main.ByteAppender(tempBytes);
-
-
             }
         }
     }
