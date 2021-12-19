@@ -85,7 +85,7 @@
                 VerticalAlignment="Top" Margin="5,39,0,0" Height="29" Width="59"/>
 
             <RichTextBox
-               Name="registryRbox"
+               Name="registersBox"
                Margin="10,65,10,131"
                Style="{StaticResource RichTxtboxTheme}" />
 
@@ -97,7 +97,7 @@
                 VerticalAlignment="Top" Margin="5,89,0,0" Height="29" Width="57"/>
 
             <RichTextBox
-               Name="indexesRbox"  
+               Name="indexesBox"  
                Margin="10,115,10,81"
                Style="{StaticResource RichTxtboxTheme}" />
 
@@ -109,7 +109,7 @@
                 VerticalAlignment="Top" Margin="5,139,0,0" Height="29" Width="60"/>
 
             <RichTextBox
-               Name="pointersRbox"
+               Name="pointersBox"
                Margin="10,165,10,31"
                Style="{StaticResource RichTxtboxTheme}" />
 
@@ -200,13 +200,42 @@
                 FontSize="13"
                 Content="Instructions" Height="27" Width="77"/>
 
-            <DataGrid 
-                Grid.Row="1"
-                Margin="10,32,10,39"
-                Background="Transparent"
-                BorderThickness="1">
-                <!--This need constructor-->
-            </DataGrid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <DataGrid
+                    x:Name="instructionGrid"
+                    Margin="8,250,12,-654"
+                    Background="Transparent"
+                    BorderThickness="1"
+                    CanUserSortColumns="False"
+                    CanUserResizeColumns="False"
+                    CanUserReorderColumns="False">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Instructions" Binding="{Binding instruction}" Width="*"/>
+                    </DataGrid.Columns>
+
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Margin" Value="15,5,0,0"/>
+                            <Setter Property="BorderThickness" Value="0.2"/>
+                            <Setter Property="BorderBrush" Value="White"/>
+                        </Style>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Margin" Value="15,5,0,0"/>
+                            <Setter Property="BorderThickness" Value="0.2"/>
+                            <Setter Property="BorderBrush" Value="White"/>
+                        </Style>
+                    </DataGrid.Resources>
+                </DataGrid>
+            </Grid>
 
             <Button
                 Name="addBtn"
@@ -218,10 +247,12 @@
                 VerticalAlignment="Center"
                 Height="28"
                 Margin="328,446,91,6"
-                Width="92"/>
+                Width="92" Click="addBtn_Click"/>
 
             <TextBox
-                Style="{StaticResource TxtboxTheme}"
+                x:Name="instructionTxt"
+                Background="Transparent"
+                Foreground="White"
                 Grid.Row="1"
                 Margin="10,449,204,7"/>
 

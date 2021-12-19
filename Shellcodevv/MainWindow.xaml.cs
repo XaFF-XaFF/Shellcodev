@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shellcodev;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Shellcodevv
 {
@@ -20,9 +10,19 @@ namespace Shellcodevv
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static API.PROCESS_INFORMATION pi;
+        public static API.Registers registers;
+
+        private static MainWindow instance;
+        public static MainWindow ReturnInstance()
+        {
+            return instance;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            instance = this;
         }
 
         #region Buttons
@@ -43,5 +43,28 @@ namespace Shellcodevv
             if (e.ChangedButton == MouseButton.Left)
                 this.DragMove();
         }
+
+        private void addBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string instruction = instructionTxt.Text;
+            if (string.IsNullOrEmpty(instruction))
+                return;
+
+            Console.WriteLine(instruction);
+
+            Instructions instructions = new Instructions();
+            AssemblyHandler handler = new AssemblyHandler();
+
+            instructions.instruction = instruction;
+
+            instructionGrid.Items.Add(instructions);
+
+            Console.WriteLine(handler.Assembler(instruction));
+        }
+    }
+
+    public class Instructions
+    {
+        public string instruction { get; set; }
     }
 }
