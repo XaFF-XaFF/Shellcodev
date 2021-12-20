@@ -84,10 +84,10 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top" Margin="5,39,0,0" Height="29" Width="59"/>
 
-            <RichTextBox
+            <TextBox
                Name="registersBox"
                Margin="10,65,10,131"
-               Style="{StaticResource RichTxtboxTheme}" />
+               />
 
             <Label
                 Content="Indexes"
@@ -96,10 +96,10 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top" Margin="5,89,0,0" Height="29" Width="57"/>
 
-            <RichTextBox
+            <TextBox
                Name="indexesBox"  
                Margin="10,115,10,81"
-               Style="{StaticResource RichTxtboxTheme}" />
+               />
 
             <Label
                 Content="Pointers"
@@ -108,10 +108,10 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top" Margin="5,139,0,0" Height="29" Width="60"/>
 
-            <RichTextBox
+            <TextBox
                Name="pointersBox"
                Margin="10,165,10,31"
-               Style="{StaticResource RichTxtboxTheme}" />
+               />
 
             <!--Row 0 Column 1-->
             <Button
@@ -254,7 +254,8 @@
                 Background="Transparent"
                 Foreground="White"
                 Grid.Row="1"
-                Margin="10,449,204,7"/>
+                Margin="10,449,204,7"
+                KeyDown="instructionTxt_KeyDown"/>
 
             <!--Row 1 Column 1-->
             <Label

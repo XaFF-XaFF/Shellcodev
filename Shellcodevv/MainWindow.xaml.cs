@@ -23,6 +23,36 @@ namespace Shellcodevv
         {
             InitializeComponent();
             instance = this;
+
+            AssemblyHandler handler = new AssemblyHandler();
+            InitProcess();
+
+            handler.SetRegisters("xor eax,eax", pi);
+            handler.SetRegisters("xor ebx,ebx", pi);
+            handler.SetRegisters("xor ecx,ecx", pi);
+        }
+
+        private void InitProcess()
+        {
+            API.STARTUPINFO si = new API.STARTUPINFO();
+            pi = new API.PROCESS_INFORMATION();
+
+            bool createproc = API.CreateProcess(
+                AppDomain.CurrentDomain.FriendlyName,
+                null,
+                IntPtr.Zero,
+                IntPtr.Zero,
+                false,
+                0x00000002,
+                IntPtr.Zero,
+                null,
+                ref si, out pi);
+
+            if(!createproc)
+            {
+                MessageBox.Show("ERROR! CreateProcess Failed");
+                this.Close();
+            }
         }
 
         #region Buttons
@@ -50,16 +80,21 @@ namespace Shellcodevv
             if (string.IsNullOrEmpty(instruction))
                 return;
 
-            Console.WriteLine(instruction);
-
             Instructions instructions = new Instructions();
             AssemblyHandler handler = new AssemblyHandler();
 
             instructions.instruction = instruction;
-
             instructionGrid.Items.Add(instructions);
 
-            Console.WriteLine(handler.Assembler(instruction));
+            handler.SetRegisters(instruction, pi);
+
+            instructionTxt.SelectAll();
+        }
+
+        private void instructionTxt_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                addBtn_Click(sender, e);
         }
     }
 

@@ -145,7 +145,7 @@ namespace Shellcodev
             }
 
             string str = string.Join(" ", list);
-            main.registersBox.AppendText(str);
+            main.registersBox.Text = str;
         }
 
         private void AppendIndexes(API.Registers registers)
@@ -164,7 +164,7 @@ namespace Shellcodev
             }
 
             string str = string.Join(" ", list);
-            main.indexesBox.AppendText(str);
+            main.indexesBox.Text = str;
         }
 
         private void AppendPointers(API.Registers registers)
@@ -183,7 +183,7 @@ namespace Shellcodev
             }
 
             string str = string.Join(" ", list);
-            main.pointersBox.AppendText(str);
+            main.pointersBox.Text = str;
         }
 
         private string Clear(string instruction)
@@ -251,9 +251,9 @@ namespace Shellcodev
 
             MainWindow.registers = Configure(registers, MainWindow.registers, instruction);
 
-            //AppendRegisters(Main.registers);
-            //AppendIndexes(Main.registers);
-            //AppendPointers(Main.registers);
+            AppendRegisters(MainWindow.registers);
+            AppendIndexes(MainWindow.registers);
+            AppendPointers(MainWindow.registers);
         }
         #endregion
     }
