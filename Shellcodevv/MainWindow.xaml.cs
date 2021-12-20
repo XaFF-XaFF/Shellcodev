@@ -48,7 +48,7 @@ namespace Shellcodevv
                 null,
                 ref si, out pi);
 
-            if(!createproc)
+            if (!createproc)
             {
                 MessageBox.Show("ERROR! CreateProcess Failed");
                 this.Close();
@@ -86,7 +86,7 @@ namespace Shellcodevv
             instructions.instruction = instruction;
             instructionGrid.Items.Add(instructions);
 
-            handler.SetRegisters(instruction, pi);
+            string bytes = handler.Assembler(instruction);
 
             instructionTxt.SelectAll();
         }

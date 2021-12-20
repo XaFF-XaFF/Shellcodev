@@ -111,7 +111,7 @@ namespace Shellcodev
             if (bytes == "InvalidInstruction")
                 return "Error!: Invalid instruction.";
 
-            //SetRegisters(instructions, MainWindow.pi);
+            SetRegisters(instructions, MainWindow.pi);
 
             //Starting from 0, place space every second byte
             string temp = null;
