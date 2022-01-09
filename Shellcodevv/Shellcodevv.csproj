@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -81,6 +82,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\AssemblyHandler.cs" />
+    <Compile Include="Core\Instruction.cs" />
+    <Compile Include="Core\Snippet.cs" />
     <Compile Include="GeneratorWindow.xaml.cs">
       <DependentUpon>GeneratorWindow.xaml</DependentUpon>
     </Compile>

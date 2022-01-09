@@ -109,7 +109,7 @@ namespace Shellcodev
             IntPtr pointer = API.AssembleInstructions(instructions);
             string bytes = Marshal.PtrToStringAnsi(pointer);
             if (bytes == "InvalidInstruction")
-                return "Error!: Invalid instruction.";
+                return null;
 
             SetRegisters(instructions, MainWindow.pi);
 

@@ -87,6 +87,7 @@
             <TextBox
                Name="registersBox"
                Margin="10,65,10,131"
+               IsReadOnly="True"
                />
 
             <Label
@@ -99,6 +100,7 @@
             <TextBox
                Name="indexesBox"  
                Margin="10,115,10,81"
+               IsReadOnly="True"
                />
 
             <Label
@@ -111,6 +113,7 @@
             <TextBox
                Name="pointersBox"
                Margin="10,165,10,31"
+               IsReadOnly="True"
                />
 
             <!--Row 0 Column 1-->
@@ -212,7 +215,8 @@
                     BorderThickness="1"
                     CanUserSortColumns="False"
                     CanUserResizeColumns="False"
-                    CanUserReorderColumns="False">
+                    CanUserReorderColumns="False"
+                    SelectionChanged="instructionGrid_SelectionChanged">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Instructions" Binding="{Binding instruction}" Width="*"/>
@@ -268,7 +272,7 @@
                 Content="Assembled instructions" Height="27" Width="143"/>
 
             <RichTextBox
-                Style="{StaticResource RichTxtboxTheme}"
+                x:Name="bytesBox"
                 Grid.Column="1"
                 Grid.Row="1"
                 HorizontalAlignment="Center"

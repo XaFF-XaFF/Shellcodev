@@ -1,13 +1,19 @@
 ﻿using Shellcodev;
+using Shellcodevv.Core;
 using System;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Shellcodevv
 {
     /// <summary>
     /// Logika interakcji dla klasy MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window
     {
         public static API.PROCESS_INFORMATION pi;
@@ -55,8 +61,27 @@ namespace Shellcodevv
             }
         }
 
-        #region Buttons
-        private void MinimizeBtn_Checked(object sender, RoutedEventArgs e)
+        public void ByteAppender(string bytes)
+        {
+            string[] split = bytes.Split(' ');
+
+            foreach (string line in split)
+            {
+                // Make red instructions that have nullbytes
+                if (line == "00")
+                {
+                    AppendText(line + " ", "red");
+                }
+                else
+                {
+                    AppendText(line + " ", "black");
+                }
+            }
+            AppendText("\r", "black");
+        }
+
+            #region Buttons
+            private void MinimizeBtn_Checked(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
@@ -76,25 +101,47 @@ namespace Shellcodevv
 
         private void addBtn_Click(object sender, RoutedEventArgs e)
         {
+            Instructions instructions = new Instructions();
+            AssemblyHandler handler = new AssemblyHandler();
+
             string instruction = instructionTxt.Text;
             if (string.IsNullOrEmpty(instruction))
                 return;
 
-            Instructions instructions = new Instructions();
-            AssemblyHandler handler = new AssemblyHandler();
-
             instructions.instruction = instruction;
-            instructionGrid.Items.Add(instructions);
-
             string bytes = handler.Assembler(instruction);
 
+            if(bytes == null)
+            {
+                MessageBox.Show("Invalid instruction!");
+                return;
+            }
+
+            instructionGrid.Items.Add(instructions);
+
             instructionTxt.SelectAll();
+
+            new Instruction(instruction);
         }
 
         private void instructionTxt_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
                 addBtn_Click(sender, e);
+        }
+
+        private void instructionGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
+        }
+
+        public void AppendText(string text, string color)
+        {
+            BrushConverter brush = new BrushConverter();
+            TextRange range = new TextRange(bytesBox.Document.ContentEnd, bytesBox.Document.ContentEnd);
+            range.Text = text;
+
+            range.ApplyPropertyValue(TextElement.ForegroundProperty, brush.ConvertFromString(color));
         }
     }
 
