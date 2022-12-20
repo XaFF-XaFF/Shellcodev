@@ -3,6 +3,8 @@ Shellcodev is a tool designed to help and automate the process of shellcode crea
 
 [![Test](https://img.shields.io/badge/Tested-x86-brightgreen?style=flat-square)]() [![Test](https://img.shields.io/badge/Not%20tested-x64-red?style=flat-square)]() [![Release](https://img.shields.io/badge/Release-v2.0.0-blue?style=flat-square)]()
 
+![1](https://raw.githubusercontent.com/XaFF-XaFF/Shellcodev/master/screenshots/1.png?raw=true)
+
 ## Attribution 
 This project is based on [WinREPL](https://github.com/XaFF-XaFF/WinREPL) by zerosum0x0
 
@@ -30,6 +32,8 @@ This project is based on [WinREPL](https://github.com/XaFF-XaFF/WinREPL) by zero
 
 All the instructions provided by user are now stored. User is now able to list, edit and delete instructions which makes
 shellcodes much easier to modify. Everything is in real-time, so any changes made in list also changes the register values. 
+
+![2](https://raw.githubusercontent.com/XaFF-XaFF/Shellcodev/master/screenshots/2.png?raw=true)
 
 ### Goal features
 
