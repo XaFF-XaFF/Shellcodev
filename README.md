@@ -1,7 +1,7 @@
 # Shellcodev
 Shellcodev is a tool designed to help and automate the process of shellcode creation. 
 
-[![Test](https://img.shields.io/badge/Tested-x86-brightgreen?style=flat-square)]() [![Test](https://img.shields.io/badge/Not%20tested-x64-red?style=flat-square)]() [![Release](https://img.shields.io/badge/Release-v2.0.0-blue?style=flat-square)]()
+[![Test](https://img.shields.io/badge/Tested-x86-brightgreen?style=flat-square)]() [![Test](https://img.shields.io/badge/Not%20tested-x64-red?style=flat-square)]() [![Release](https://img.shields.io/badge/Release-v2.0.0-blue?style=flat-square)](https://github.com/XaFF-XaFF/Shellcodev/releases/tag/v2.0.0)
 
 ![1](https://raw.githubusercontent.com/XaFF-XaFF/Shellcodev/master/screenshots/1.png?raw=true)
 
@@ -41,3 +41,8 @@ shellcodes much easier to modify. Everything is in real-time, so any changes mad
 will be removed by encrypting data with xor. 
 - Shellcode runner: User will be able to test shellcode by injecting it into the process.
 - More formats.
+
+### References 
+Libraries used to assemble instructions:
+- [AsmJit](https://github.com/asmjit/asmjit)
+- [AsmTK](https://github.com/asmjit/asmtk)
