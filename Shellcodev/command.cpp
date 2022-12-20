@@ -1,7 +1,18 @@
 #include "repl.h"
 #include "color.hpp"
 
-BOOL axor;
+void shelldev_print_assembly(unsigned char* encode, size_t size)
+{
+	printf("assembled (%zu bytes): ", size);
+
+	for (size_t i = 0; i < size; ++i)
+		if (encode[i] == 0x0)
+			std::cout << std::hex << dye::light_red("0x") << dye::light_red(static_cast<int>(encode[i])) << " ";
+		else 
+			std::cout << std::hex << "0x" << static_cast<int>(encode[i]) << " ";
+
+	printf("\n");
+}
 
 static BOOL shelldev_command_kernel32(shell_t* sh, std::vector<std::string> parts)
 {
@@ -354,19 +365,29 @@ static BOOL shelldev_toshell(std::vector<asm_t>* assemblies, std::vector<std::st
 	return TRUE;
 }
 
+static BOOL shelldev_command_delete(shell_t* sh, std::vector<asm_t>* assemblies, std::vector<std::string> parts) 
+{
+	assemblies->erase(assemblies->begin() + std::stoi(parts[0]));
+
+	shelldev_run_shellcode(sh, assemblies);
+
+	return TRUE;
+}
+
+
 static BOOL winrepl_command_help()
 {
 	std::cout << ".help\t\t\tShow this help screen." << std::endl;
 	std::cout << ".registers\t\tShow more detailed register info." << std::endl;
 	std::cout << ".list\t\t\tShow list of previously executed assembly instructions." << std::endl;
 	std::cout << ".edit line\t\tEdit specified line in list." << std::endl;
-	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c" << std::endl;
+	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
+	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c" << std::endl;
 	std::cout << ".allocate size\t\tAllocate a memory buffer." << std::endl;
 	std::cout << ".loadlibrary path\tLoad a DLL into the process." << std::endl;
 	std::cout << ".kernel32 func\t\tGet address of a kernel32 export." << std::endl;
-	//std::cout << ".dep [0/1]\t\tEnable or disable NX-bit." << std::endl;
 	std::cout << ".shellcode hexdata\tExecute raw shellcode." << std::endl;
 	std::cout << ".peb\t\t\tLoads PEB into accumulator." << std::endl;
 	std::cout << ".reset\t\t\tStart a new environment." << std::endl;
@@ -392,6 +413,8 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_toshell(assemblies, parts);
 	else if (mainCmd == ".read")
 		return shelldev_command_read(sh, parts);
+	else if (mainCmd == ".del")
+		return shelldev_command_delete(sh, assemblies, parts);
 	else if (mainCmd == ".write")
 		return shelldev_command_write(sh, parts);
 	else if (mainCmd == ".allocate")

@@ -1,19 +1,10 @@
 #include "repl.h"
 #include <stdio.h>
 
+
 static inline BOOL check_bit(DWORD var, char pos)
 {
 	return !!((var) & (1 << (pos)));
-}
-
-void shelldev_print_assembly(unsigned char *encode, size_t size)
-{
-	printf("assembled (%zu bytes): ", size);
-	
-	for (size_t i = 0; i < size; ++i)
-		printf("%02x ", encode[i]);
-
-	printf("\n");
 }
 
 static void winrepl_reset_console_color()
