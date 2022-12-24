@@ -295,11 +295,12 @@ BOOL shelldev_command_registers(shell_t* sh, std::vector<std::string> parts)
 	return TRUE;
 }
 
-static BOOL shelldev_command_reset(shell_t* sh)
+static BOOL shelldev_command_reset(shell_t* sh, std::vector<asm_t>* assemblies)
 {
 	shelldev_print_good("Resetting the environment.");
 	TerminateProcess(sh->procInfo.hProcess, 0);
 	DebugActiveProcessStop(sh->procInfo.dwProcessId);
+	assemblies->clear();
 	return FALSE;
 }
 
@@ -424,7 +425,7 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 	else if (mainCmd == ".kernel32")
 		return shelldev_command_kernel32(sh, parts);
 	else if (mainCmd == ".reset")
-		return shelldev_command_reset(sh);
+		return shelldev_command_reset(sh, assemblies);
 	else if (mainCmd == ".shellcode")
 		return shelldev_command_shellcode(sh, parts);
 	else if (mainCmd == ".peb")

@@ -22,6 +22,11 @@ typedef struct _asm_context_t {
 	int size;
 } asm_t;
 
+typedef struct _parser_context_t {
+	std::string instruction;
+	BOOL xored;
+} _str_parser_t;
+
 BOOL shelldev_init(shell_t* sh);
 BOOL shelldev_loop(shell_t* sh);
 
@@ -31,6 +36,7 @@ BOOL shelldev_eval(shell_t* sh, std::string command, std::vector<asm_t>* assembl
 BOOL shelldev_write_shellcode(shell_t* sh, unsigned char* encode, size_t size);
 void shelldev_debug_shellcode(shell_t* sh);
 
+std::vector<std::string> shelldev_parse_string(std::string value);
 BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies);
 BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* assemblies);
 

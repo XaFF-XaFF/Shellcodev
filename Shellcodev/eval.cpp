@@ -4,8 +4,105 @@
 #undef max
 #include <asmjit/asmjit.h>
 #include <asmtk/asmtk.h>
+#include <regex>
 
-static void winrepl_fix_rip(shell_t* sh)
+static std::string get_register(std::string instruction)
+{
+	std::string reg;
+	for (int i = 4; i < instruction.size(); i++)
+		if (instruction[i] == ',')
+			break;
+		else reg += instruction[i];
+
+	return reg;
+}
+
+static inline unsigned int value(char c)
+{
+	if (c >= '0' && c <= '9') { return c - '0'; }
+	if (c >= 'a' && c <= 'f') { return c - 'a' + 10; }
+	if (c >= 'A' && c <= 'F') { return c - 'A' + 10; }
+	return -1;
+}
+
+std::string str_xor(std::string const& s1, std::string const& s2)
+{
+	static char const alphabet[] = "0123456789abcdef";
+
+	std::string result;
+	result.reserve(s1.length());
+
+	for (std::size_t i = 0; i != s1.length(); ++i)
+	{
+		unsigned int v = value(s1[i]) ^ value(s2[i]);
+
+		result.push_back(alphabet[v]);
+	}
+
+	return result;
+}
+
+std::vector<std::string> shelldev_parse_string(std::string reg, std::string value) // Currently only works on x86!
+{
+	std::vector<std::string> stringParts;
+	for (size_t i = 0; i < value.size(); i += 4)
+		stringParts.push_back(value.substr(i, 4));
+
+	std::vector<std::string> hex;
+	for (std::string part : stringParts)
+	{
+		std::stringstream ss;
+		for (int i = part.size() - 1; i >= 0; i--)
+			ss << std::hex << static_cast<int>(part[i]);
+
+		hex.push_back(ss.str());
+	}
+
+	for (int i = 0; i < hex.size(); i++)
+		if (hex[i].size() < 8)
+			for (int j = 0; j < (8 - hex[i].size()); j++)
+				hex[i].insert(0, "00");
+
+	std::string key = "11111111";
+	std::vector<_str_parser_t> parsers;
+	for (int i = 0; i < hex.size(); i++)
+	{
+		_str_parser_t parser;
+		if (hex[i].find("0") != std::string::npos)
+		{
+			parser.instruction = str_xor(hex[i], key);
+			parser.xored = TRUE;
+			parsers.push_back(parser);
+		}
+		else
+		{
+			parser.instruction = hex[i];
+			parser.xored = FALSE;
+			parsers.push_back(parser);
+		}
+	}
+		
+	std::vector<std::string> instructions;
+	for (int i = parsers.size() - 1; i >= 0; i--)
+	{
+		if (parsers[i].xored)
+		{
+			instructions.push_back("mov " + reg + ", 0x" + parsers[i].instruction);
+			instructions.push_back("xor " + reg + ", 0x" + key);
+			instructions.push_back("push " + reg);
+		}
+		else
+		{
+			instructions.push_back("push 0x" + parsers[i].instruction);
+		}
+	}
+
+	instructions.push_back("mov " + reg + ", esp");
+	
+	return instructions;
+}
+
+static void shelldev_fix_rip(shell_t* sh)
 {
 	// fix RIP because of \xcc
 	CONTEXT ctx = { 0 };
@@ -99,7 +196,7 @@ void shelldev_debug_shellcode(shell_t* sh)
 		}
 	}
 
-	winrepl_fix_rip(sh);
+	shelldev_fix_rip(sh);
 
 	CONTEXT ctx = { 0 };
 	ctx.ContextFlags = CONTEXT_ALL;
@@ -194,17 +291,32 @@ static BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vecto
 	size_t addr = sh->curr.Eip;
 #endif
 
+	for (int i = 0; i < instructions.size(); i++)
+	{
+		std::vector<std::string> itms = split(instructions[i], "\"");
+		for (std::vector<std::string>::iterator it = itms.begin() + 1; it != itms.end(); it += 2) 
+		{
+			std::string reg = get_register(instructions[i]);
+			std::vector<std::string> parse = shelldev_parse_string(reg, *it);
+
+			instructions.insert(instructions.end(), parse.begin(), parse.end());
+			instructions.erase(instructions.begin() + i);
+		}
+	}
+
 	for (std::string& instruction : instructions)
 	{
-		if (!shelldev_assemble(instruction.c_str(), data, addr + data.size()))
+		std::vector<unsigned char> temp;
+		if (!shelldev_assemble(instruction.c_str(), temp, addr + temp.size()))
 			return TRUE;
 
 		asm_t a;
 		a.instruction = instruction;
-		a.bytes = data;
-		a.size = sizeof(data);
+		a.bytes = temp;
+		a.size = sizeof(temp);
 
 		assemblies->push_back(a);
+		data.insert(data.end(), temp.begin(), temp.end());
 	}
 
 	if (!shelldev_write_shellcode(sh, data.data(), data.size()))
