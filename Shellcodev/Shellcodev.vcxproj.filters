@@ -50,5 +50,8 @@
     <ClCompile Include="str.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

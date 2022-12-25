@@ -27,6 +27,7 @@
     <ClCompile Include="command.cpp" />
     <ClCompile Include="eval.cpp" />
     <ClCompile Include="init.cpp" />
+    <ClCompile Include="inject.cpp" />
     <ClCompile Include="loop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="print.cpp" />

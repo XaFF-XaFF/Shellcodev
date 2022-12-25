@@ -47,3 +47,5 @@ void shelldev_print_assembly(unsigned char* encode, size_t size);
 void shelldev_print_bytes(unsigned char* addr, int len, unsigned long long start_addr = 0);
 void shelldev_print_good(const char* format, ...);
 void shelldev_print_errors(const char* format, ...);
+
+BOOL shelldev_inject_shellcode(std::vector<asm_t>* assemblies, std::string pid);

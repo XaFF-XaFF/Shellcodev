@@ -352,15 +352,48 @@ static BOOL shelldev_edit(shell_t* sh, std::vector<asm_t>* assemblies, std::vect
 
 static BOOL shelldev_toshell(std::vector<asm_t>* assemblies, std::vector<std::string> parts)
 {
-	if (parts[0] == "c" || parts[0] == "C")
+	if (parts[0] == "c")
 	{
+		int count = 0;
 		std::cout << "unsigned char shellcode[] = {" << std::endl;
-		for (asm_t assembly : *assemblies)
+		for (int i = 0; i < assemblies->size(); i++)
 		{
-			for (unsigned char byte : assembly.bytes)
-				printf("0x%x, ", byte);
+			for (int j = 0; j < assemblies->at(i).instruction.size(); j++)
+			{
+				if (count % 12 == 0)
+					printf("\n");
+				else
+					printf("0x%x, ", assemblies->at(i).instruction[j]);
+
+				count++;
+			}
 		}
 		std::cout << "};" << std::endl;
+	}
+	else if (parts[0] == "cs")
+	{
+		int count = 0;
+		std::cout << "byte[] shellcode = {" << std::endl;
+		for (int i = 0; i < assemblies->size(); i++)
+		{
+			for (int j = 0; j < assemblies->at(i).instruction.size(); j++)
+			{
+				if (count % 12 == 0)
+					printf("\n");
+				else
+					printf("0x%x, ", assemblies->at(i).instruction[j]);
+
+				count++;
+			}
+		}
+		std::cout << "};" << std::endl;
+	}
+	else if (parts[0] == "raw")
+	{
+		for (int i = 0; i < assemblies->size(); i++)
+			for (int j = 0; j < assemblies->at(i).instruction.size(); j++)
+				printf("%X", assemblies->at(i).instruction[j]);
+		printf("\n");
 	}
 
 	return TRUE;
@@ -385,7 +418,8 @@ static BOOL winrepl_command_help()
 	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
-	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c" << std::endl;
+	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
+	//std::cout << ".inject pid\t\tTest shellcode by injecting it into the process." << std::endl;
 	std::cout << ".allocate size\t\tAllocate a memory buffer." << std::endl;
 	std::cout << ".loadlibrary path\tLoad a DLL into the process." << std::endl;
 	std::cout << ".kernel32 func\t\tGet address of a kernel32 export." << std::endl;
@@ -412,6 +446,8 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_edit(sh, assemblies, parts);
 	else if (mainCmd == ".toshell")
 		return shelldev_toshell(assemblies, parts);
+	else if (mainCmd == ".inject")
+		return shelldev_inject_shellcode(assemblies, parts[0]);
 	else if (mainCmd == ".read")
 		return shelldev_command_read(sh, parts);
 	else if (mainCmd == ".del")
