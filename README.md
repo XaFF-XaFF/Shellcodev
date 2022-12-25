@@ -47,7 +47,7 @@ shellcodes much easier to modify. Everything is in real-time, so any changes mad
 - **Done:** ~~String converter: String provided by user will be automatically converted to hex and encoded with little endian. In case of nullbytes, they
 will be removed by encrypting data with xor.~~
 - Shellcode runner: User will be able to test shellcode by injecting it into the process.
-- More formats.
+- **Done:** ~~More formats~~.
 
 ### References 
 Libraries used to assemble instructions:
