@@ -33,12 +33,19 @@ This project is based on [WinREPL](https://github.com/XaFF-XaFF/WinREPL) by zero
 All the instructions provided by user are now stored. User is now able to list, edit and delete instructions which makes
 shellcodes much easier to modify. Everything is in real-time, so any changes made in list also changes the register values. 
 
+#### Listing
 ![2](https://raw.githubusercontent.com/XaFF-XaFF/Shellcodev/master/screenshots/2.png?raw=true)
+
+#### String snippets
+<img src="https://github.com/XaFF-XaFF/Shellcodev/blob/master/screenshots/1.gif" width="600"/>
+
+#### Nullbyte handling 
+<img src="https://github.com/XaFF-XaFF/Shellcodev/blob/master/screenshots/2.gif" width="600"/>
 
 ### Goal features
 
-- String converter: String provided by user will be automatically converted to hex and encoded with little endian. In case of nullbytes, they
-will be removed by encrypting data with xor. 
+- **Done:** ~~String converter: String provided by user will be automatically converted to hex and encoded with little endian. In case of nullbytes, they
+will be removed by encrypting data with xor.~~
 - Shellcode runner: User will be able to test shellcode by injecting it into the process.
 - More formats.
 
