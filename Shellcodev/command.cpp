@@ -419,7 +419,7 @@ static BOOL winrepl_command_help()
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
 	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
-	//std::cout << ".inject pid\t\tTest shellcode by injecting it into the process." << std::endl;
+	std::cout << ".inject pid\t\tTest shellcode by injecting it into the process. Works currently only on x86!" << std::endl;
 	std::cout << ".allocate size\t\tAllocate a memory buffer." << std::endl;
 	std::cout << ".loadlibrary path\tLoad a DLL into the process." << std::endl;
 	std::cout << ".kernel32 func\t\tGet address of a kernel32 export." << std::endl;
