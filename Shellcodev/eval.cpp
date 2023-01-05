@@ -58,12 +58,12 @@ std::vector<std::string> shelldev_parse_string(std::string reg, std::string valu
 		hex.push_back(ss.str());
 	}
 
+	std::string key = "11111111";
 	for (int i = 0; i < hex.size(); i++)
 		if (hex[i].size() < 8)
 			for (int j = 0; j < (8 - hex[i].size()); j++)
 				hex[i].insert(0, "00");
 
-	std::string key = "11111111";
 	std::vector<_str_parser_t> parsers;
 	for (int i = 0; i < hex.size(); i++)
 	{
@@ -97,7 +97,11 @@ std::vector<std::string> shelldev_parse_string(std::string reg, std::string valu
 		}
 	}
 
+#ifdef _M_X64
+	instructions.push_back("mov " + reg + ", rsp");
+#elif defined(_M_IX86)
 	instructions.push_back("mov " + reg + ", esp");
+#endif
 	
 	return instructions;
 }

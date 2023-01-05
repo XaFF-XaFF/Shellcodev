@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
 	SetConsoleCtrlHandler(winrepl_exit, TRUE);
 
-	std::cout << "Shellcodev v2.1 by XaFF based on WinREPL\n";
+	std::cout << "Shellcodev v2.2 by XaFF based on WinREPL\n";
 	std::cout << "Input assembly instructions, or \".help\" for a list of commands.\n" << std::endl;
 
 	while (TRUE)
