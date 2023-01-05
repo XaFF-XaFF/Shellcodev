@@ -1,7 +1,7 @@
 # Shellcodev
 Shellcodev is a tool designed to help and automate the process of shellcode creation. 
 
-[![Test](https://img.shields.io/badge/Tested-x86-brightgreen?style=flat-square)]() [![Test](https://img.shields.io/badge/Not%20tested-x64-red?style=flat-square)]() [![Release](https://img.shields.io/badge/Release-v2.1-blue?style=flat-square)](https://github.com/XaFF-XaFF/Shellcodev/releases/tag/v2.1.0)
+[![Test](https://img.shields.io/badge/Tested-x86-brightgreen?style=flat-square)]() [![Test](https://img.shields.io/badge/Tested-x64-brightgreen?style=flat-square)]() [![Release](https://img.shields.io/badge/Release-v2.2-blue?style=flat-square)](https://github.com/XaFF-XaFF/Shellcodev/releases/tag/v2.2.0)
 
 ![1](https://raw.githubusercontent.com/XaFF-XaFF/Shellcodev/master/screenshots/1.png?raw=true)
 
@@ -46,7 +46,7 @@ shellcodes much easier to modify. Everything is in real-time, so any changes mad
 
 - **Done:** ~~String converter: String provided by user will be automatically converted to hex and encoded with little endian. In case of nullbytes, they
 will be removed by encrypting data with xor.~~
-- Shellcode runner: User will be able to test shellcode by injecting it into the process.
+- **Done:** ~~Shellcode runner: User will be able to test shellcode by injecting it into the process.~~
 - **Done:** ~~More formats~~.
 
 ### References 
