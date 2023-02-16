@@ -38,6 +38,7 @@ void shelldev_debug_shellcode(shell_t* sh);
 
 std::vector<std::string> shelldev_parse_string(std::string value);
 BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies);
+BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t>* assemblies);
 BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* assemblies);
 
 void shelldev_print_pids(shell_t* sh);

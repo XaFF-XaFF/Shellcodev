@@ -284,7 +284,7 @@ BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies)
 }
 
 
-static BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t>* assemblies)
+BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t>* assemblies)
 {
 	std::vector<std::string> instructions = split(assembly, ";");
 	std::vector<unsigned char> data;

@@ -68,25 +68,22 @@ static BOOL shelldev_command_shellcode(shell_t* sh, std::vector<std::string> par
 	return TRUE;
 }
 
-static BOOL shelldev_command_peb(shell_t* sh, std::vector<std::string> parts)
+static BOOL shelldev_command_peb(shell_t* sh, std::vector<std::string> parts, std::vector<asm_t>* assemblies)
 {
+	std::string instructions;
 #ifdef _M_X64
 	// xor eax, eax
 	// mov rax, gs:[eax+0x60]
-	unsigned char bytes[] = { 0x31, 0xc0, 0x65, 0x48, 0x8b, 0x40, 0x60 };
+	// unsigned char bytes[] = { 0x31, 0xc0, 0x65, 0x48, 0x8b, 0x40, 0x60 };
+	instructions = "xor eax, eax;mov rax, gs:[eax+0x60]";
 #elif defined(_M_IX86)
 	// xor eax, eax
 	// mov eax, fs:[eax+0x30]
-	unsigned char bytes[] = { 0x31, 0xC0, 0x64, 0x8B, 0x40, 0x30 };
+	// unsigned char bytes[] = { 0x31, 0xC0, 0x64, 0x8B, 0x40, 0x30 };
+	instructions = "xor eax, eax;mov eax, fs:[eax+0x30]";
 #endif
-	if (!shelldev_write_shellcode(sh, bytes, sizeof(bytes)))
-	{
-		shelldev_print_errors("Unable to allocate shellcode!");
-		return TRUE;
-	}
 
-	shelldev_debug_shellcode(sh);
-	shelldev_print_registers(sh);
+	shelldev_run_shellcode(sh, instructions, assemblies);
 
 	return TRUE;
 }
@@ -465,7 +462,7 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 	else if (mainCmd == ".shellcode")
 		return shelldev_command_shellcode(sh, parts);
 	else if (mainCmd == ".peb")
-		return shelldev_command_peb(sh, parts);
+		return shelldev_command_peb(sh, parts, assemblies);
 	else if (mainCmd == ".quit" || mainCmd == ".exit")
 		ExitProcess(0);
 	else
