@@ -1,7 +1,7 @@
 # Shellcodev
 Shellcodev is a tool designed to help and automate the process of shellcode creation. 
 
-[![Test](https://img.shields.io/badge/Tested-x86-brightgreen?style=flat-square)]() [![Test](https://img.shields.io/badge/Tested-x64-brightgreen?style=flat-square)]() [![Release](https://img.shields.io/badge/Release-v2.2-blue?style=flat-square)](https://github.com/XaFF-XaFF/Shellcodev/releases/tag/v2.2.0)
+[![Test](https://img.shields.io/badge/Tested-x86-brightgreen?style=flat-square)]() [![Test](https://img.shields.io/badge/Tested-x64-brightgreen?style=flat-square)]() [![Release](https://img.shields.io/badge/Release-v2.2-blue?style=flat-square)](https://github.com/XaFF-XaFF/Shellcodev/releases/tag/v2.2.1)
 
 ![1](https://raw.githubusercontent.com/XaFF-XaFF/Shellcodev/master/screenshots/1.png?raw=true)
 
