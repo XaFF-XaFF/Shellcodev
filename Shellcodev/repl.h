@@ -8,6 +8,8 @@
 
 #define WINREPL_INIT_MEM_SIZE 0x10000
 
+extern BOOL xorNulls;
+
 typedef struct _shell_context_t {
 	PROCESS_INFORMATION procInfo;
 	LPVOID lpStartAddress;

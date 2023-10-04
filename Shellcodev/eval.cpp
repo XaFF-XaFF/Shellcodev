@@ -59,16 +59,19 @@ std::vector<std::string> shelldev_parse_string(std::string reg, std::string valu
 	}
 
 	std::string key = "11111111";
-	for (int i = 0; i < hex.size(); i++)
-		if (hex[i].size() < 8)
-			for (int j = 0; j < (8 - hex[i].size()); j++)
-				hex[i].insert(0, "00");
+	if(xorNulls == TRUE)
+	{
+		for (int i = 0; i < hex.size(); i++)
+			if (hex[i].size() < 8)
+				for (int j = 0; j < (8 - hex[i].size()); j++)
+					hex[i].insert(0, "00");
+	}
 
 	std::vector<_str_parser_t> parsers;
 	for (int i = 0; i < hex.size(); i++)
 	{
 		_str_parser_t parser;
-		if (hex[i].find("0") != std::string::npos)
+		if (xorNulls == TRUE && hex[i].find("0") != std::string::npos)
 		{
 			parser.instruction = str_xor(hex[i], key);
 			parser.xored = TRUE;
@@ -255,6 +258,56 @@ static BOOL shelldev_assemble(const char* instruction, std::vector<unsigned char
 	return TRUE;
 }
 
+
+//static BOOL shelldev_assemble(const char* instruction, std::vector<unsigned char>& data, size_t address)
+//{
+//	using namespace asmjit;
+//	using namespace asmtk;
+//
+//	const char* i1 = "mov eax, 0x760a9350";
+//	const char* i2 = "xor edx, edx";
+//	const char* i3 = "push edx";
+//	const char* i4 = "call eax";
+//
+//	// Setup CodeInfo
+//	JitRuntime jr;
+//
+//	// Setup CodeHolder
+//	CodeHolder code;
+//	Error err = code.init(jr.environment());
+//	if (err != kErrorOk)
+//	{
+//		printf("ERROR: %s\n", DebugUtils::errorAsString(err));
+//		return FALSE;
+//	}
+//
+//	// Attach an assembler to the CodeHolder.
+//	x86::Assembler a(&code);
+//
+//	Label loop = a.newLabel();
+//	AsmParser p(&a);
+//
+//	a.bind(loop);
+//	p.parse(i1);
+//	p.parse(i2);
+//	p.parse(i3);
+//	p.parse(i3);
+//	p.parse(i3);
+//	p.parse(i3);
+//	p.parse(i4);
+//
+//	a.jmp(loop);
+//
+//	code.detach(&a);
+//
+//	// Now you can print the code, which is stored in the first section (.text).
+//	CodeBuffer& buffer = code.sectionById(0)->buffer();
+//	for (size_t i = 0; i < buffer.size(); i++)
+//		data.push_back(buffer.data()[i]);
+//
+//	return TRUE;
+//}
+
 BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies)
 {
 #ifdef _M_X64
@@ -298,7 +351,7 @@ BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t
 	for (int i = 0; i < instructions.size(); i++)
 	{
 		std::vector<std::string> itms = split(instructions[i], "\"");
-		for (std::vector<std::string>::iterator it = itms.begin() + 1; it != itms.end(); it += 2) 
+		for (std::vector<std::string>::iterator it = itms.begin() + 1; it != itms.end(); it += 2)
 		{
 			std::string reg = get_register(instructions[i]);
 			std::vector<std::string> parse = shelldev_parse_string(reg, *it);

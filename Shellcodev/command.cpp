@@ -1,6 +1,8 @@
 #include "repl.h"
 #include "color.hpp"
 
+BOOL xorNulls;
+
 void shelldev_print_assembly(unsigned char* encode, size_t size)
 {
 	printf("assembled (%zu bytes): ", size);
@@ -405,6 +407,22 @@ static BOOL shelldev_command_delete(shell_t* sh, std::vector<asm_t>* assemblies,
 	return TRUE;
 }
 
+static BOOL shelldev_xoring(std::string parameter)
+{
+	if (parameter == "e")
+		xorNulls = TRUE;
+	else if (parameter == "d")
+		xorNulls = FALSE;
+	else if (parameter == "status")
+		if (xorNulls == TRUE)
+			std::cout << "Xoring is " << dye::green("enabled") << std::endl;
+		else
+			std::cout << "Xoring is " << dye::red("disabled") << std::endl;
+	else
+		std::cout << "Invalid parameter!" << std::endl;
+
+	return TRUE;
+}
 
 static BOOL winrepl_command_help()
 {
@@ -413,6 +431,7 @@ static BOOL winrepl_command_help()
 	std::cout << ".list\t\t\tShow list of previously executed assembly instructions." << std::endl;
 	std::cout << ".edit line\t\tEdit specified line in list." << std::endl;
 	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
+	std::cout << ".xor e/d or status\t\tEnable or disable nullbyte xoring. Works currently only on x86!" << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
 	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
@@ -449,6 +468,8 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_command_read(sh, parts);
 	else if (mainCmd == ".del")
 		return shelldev_command_delete(sh, assemblies, parts);
+	else if (mainCmd == ".xor")
+		return shelldev_xoring(parts[0]);
 	else if (mainCmd == ".write")
 		return shelldev_command_write(sh, parts);
 	else if (mainCmd == ".allocate")
