@@ -48,8 +48,8 @@ shellcodes much easier to modify. Everything is in real-time, so any changes mad
 will be removed by encrypting data with xor.~~
 - **Done:** ~~Shellcode runner: User will be able to test shellcode by injecting it into the process.~~
 - **Done:** ~~More formats~~.
+- **Done:** ~~Make nullbyte obfuscation optional~~
 - Loop support
-- Make nullbyte obfuscation optional
 
 ### References 
 Libraries used to assemble instructions:
