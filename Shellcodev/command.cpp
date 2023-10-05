@@ -407,7 +407,7 @@ static BOOL shelldev_command_delete(shell_t* sh, std::vector<asm_t>* assemblies,
 	return TRUE;
 }
 
-static BOOL shelldev_xoring(std::string parameter)
+static BOOL shelldev_xoring()
 {
 	if (xorNulls){
 		xorNulls = FALSE;
@@ -464,7 +464,7 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 	else if (mainCmd == ".del")
 		return shelldev_command_delete(sh, assemblies, parts);
 	else if (mainCmd == ".xor")
-		return shelldev_xoring(parts[0]);
+		return shelldev_xoring();
 	else if (mainCmd == ".write")
 		return shelldev_command_write(sh, parts);
 	else if (mainCmd == ".allocate")
