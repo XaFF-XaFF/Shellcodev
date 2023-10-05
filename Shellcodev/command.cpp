@@ -1,7 +1,7 @@
 #include "repl.h"
 #include "color.hpp"
 
-BOOL xorNulls;
+BOOL xorNulls = FALSE;
 
 void shelldev_print_assembly(unsigned char* encode, size_t size)
 {
@@ -409,18 +409,13 @@ static BOOL shelldev_command_delete(shell_t* sh, std::vector<asm_t>* assemblies,
 
 static BOOL shelldev_xoring(std::string parameter)
 {
-	if (parameter == "e")
-		xorNulls = TRUE;
-	else if (parameter == "d")
+	if (xorNulls){
 		xorNulls = FALSE;
-	else if (parameter == "status")
-		if (xorNulls == TRUE)
-			std::cout << "Xoring is " << dye::green("enabled") << std::endl;
-		else
-			std::cout << "Xoring is " << dye::red("disabled") << std::endl;
-	else
-		std::cout << "Invalid parameter!" << std::endl;
-
+		std::cout << "Xoring is " << dye::red("disabled") << std::endl;
+	} else {
+		xorNulls = TRUE;
+		std::cout << "Xoring is " << dye::green("enabled") << std::endl;
+	}
 	return TRUE;
 }
 
