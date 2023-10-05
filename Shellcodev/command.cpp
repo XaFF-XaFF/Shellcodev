@@ -431,7 +431,7 @@ static BOOL winrepl_command_help()
 	std::cout << ".list\t\t\tShow list of previously executed assembly instructions." << std::endl;
 	std::cout << ".edit line\t\tEdit specified line in list." << std::endl;
 	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
-	std::cout << ".xor e/d or status\t\tEnable or disable nullbyte xoring. Works currently only on x86!" << std::endl;
+	std::cout << ".xor e/d/status\t\tEnable, disable or show status of nullbyte xoring." << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
 	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;

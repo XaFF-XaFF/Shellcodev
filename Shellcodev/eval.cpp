@@ -1,10 +1,9 @@
-#include "repl.h"
-
 #undef min
 #undef max
 #include <asmjit/asmjit.h>
 #include <asmtk/asmtk.h>
 #include <regex>
+#include "repl.h"
 
 static std::string get_register(std::string instruction)
 {
@@ -44,6 +43,8 @@ std::string str_xor(std::string const& s1, std::string const& s2)
 
 std::vector<std::string> shelldev_parse_string(std::string reg, std::string value) // Currently only works on x86!
 {
+	std::string key = "11111111";
+
 	std::vector<std::string> stringParts;
 	for (size_t i = 0; i < value.size(); i += 4)
 		stringParts.push_back(value.substr(i, 4));
@@ -58,14 +59,11 @@ std::vector<std::string> shelldev_parse_string(std::string reg, std::string valu
 		hex.push_back(ss.str());
 	}
 
-	std::string key = "11111111";
 	if(xorNulls == TRUE)
-	{
 		for (int i = 0; i < hex.size(); i++)
 			if (hex[i].size() < 8)
 				for (int j = 0; j < (8 - hex[i].size()); j++)
 					hex[i].insert(0, "00");
-	}
 
 	std::vector<_str_parser_t> parsers;
 	for (int i = 0; i < hex.size(); i++)
@@ -258,55 +256,95 @@ static BOOL shelldev_assemble(const char* instruction, std::vector<unsigned char
 	return TRUE;
 }
 
+static BOOL shelldev_jump(asmjit::Label loop, asmjit::x86::Assembler* a, std::string instruction)
+{
+	// Jump instruction checker
+	std::string jump;
+	for (int i = 0; i < instruction.size(); i++)
+		if (instruction[i] != ' ')
+			jump += instruction[i];
+		else break;
 
-//static BOOL shelldev_assemble(const char* instruction, std::vector<unsigned char>& data, size_t address)
-//{
-//	using namespace asmjit;
-//	using namespace asmtk;
-//
-//	const char* i1 = "mov eax, 0x760a9350";
-//	const char* i2 = "xor edx, edx";
-//	const char* i3 = "push edx";
-//	const char* i4 = "call eax";
-//
-//	// Setup CodeInfo
-//	JitRuntime jr;
-//
-//	// Setup CodeHolder
-//	CodeHolder code;
-//	Error err = code.init(jr.environment());
-//	if (err != kErrorOk)
-//	{
-//		printf("ERROR: %s\n", DebugUtils::errorAsString(err));
-//		return FALSE;
-//	}
-//
-//	// Attach an assembler to the CodeHolder.
-//	x86::Assembler a(&code);
-//
-//	Label loop = a.newLabel();
-//	AsmParser p(&a);
-//
-//	a.bind(loop);
-//	p.parse(i1);
-//	p.parse(i2);
-//	p.parse(i3);
-//	p.parse(i3);
-//	p.parse(i3);
-//	p.parse(i3);
-//	p.parse(i4);
-//
-//	a.jmp(loop);
-//
-//	code.detach(&a);
-//
-//	// Now you can print the code, which is stored in the first section (.text).
-//	CodeBuffer& buffer = code.sectionById(0)->buffer();
-//	for (size_t i = 0; i < buffer.size(); i++)
-//		data.push_back(buffer.data()[i]);
-//
-//	return TRUE;
-//}
+	if (jump == "jmp")
+		a->jmp(loop);
+	else if (jump == "je")
+		a->je(loop);
+	else if (jump == "jz")
+		a->jz(loop);
+	else if (jump == "jne")
+		a->jne(loop);
+	else if (jump == "jnz")
+		a->jnz(loop);
+	else if (jump == "jg")
+		a->jg(loop);
+	else if (jump == "jnle")
+		a->jnle(loop);
+	else if (jump == "jge")
+		a->jge(loop);
+	else if (jump == "jnl")
+		a->jnl(loop);
+	else if (jump == "jl")
+		a->jl(loop);
+	else if (jump == "jnge")
+		a->jnge(loop);
+	else if (jump == "jle")
+		a->jle(loop);
+	else if (jump == "jng")
+		a->jng(loop);
+	else if (jump == "ja")
+		a->ja(loop);
+	else if (jump == "jnbe")
+		a->jnbe(loop);
+	else if (jump == "jae")
+		a->jae(loop);
+	else if (jump == "jnb")
+		a->jnb(loop);
+	// Add more options
+	else
+		return FALSE;
+
+	return TRUE;
+}
+
+static BOOL shelldev_assemble_loop(std::vector<std::string> loopInstructions, std::vector<unsigned char>& data, size_t address)
+{
+	using namespace asmjit;
+	using namespace asmtk;
+
+	// Setup CodeInfo
+	JitRuntime jr;
+
+	// Setup CodeHolder
+	CodeHolder code;
+	Error err = code.init(jr.environment());
+	if (err != kErrorOk)
+	{
+		printf("ERROR: %s\n", DebugUtils::errorAsString(err));
+		return FALSE;
+	}
+
+	// Attach an assembler to the CodeHolder.
+	x86::Assembler a(&code);
+
+	Label loop = a.newLabel();
+	a.bind(loop);
+	AsmParser p(&a);
+
+	for (int i = 0; i < loopInstructions.size(); i++)
+	{
+		if (!shelldev_jump(loop, &a, loopInstructions[i]))
+			p.parse(loopInstructions[i].c_str());
+	}
+
+	code.detach(&a);
+
+	// Now you can print the code, which is stored in the first section (.text).
+	CodeBuffer& buffer = code.sectionById(0)->buffer();
+	for (size_t i = 0; i < buffer.size(); i++)
+		data.push_back(buffer.data()[i]);
+
+	return TRUE;
+}
 
 BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies)
 {
@@ -318,6 +356,9 @@ BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies)
 
 	for (int i = 0; i < assemblies->capacity(); i++)
 	{
+		if (assemblies->at(i).size == 0)
+			i++;
+
 		std::vector<unsigned char> data;
 		if (!shelldev_assemble(assemblies->at(i).instruction.c_str(), data, addr + data.size()))
 			return TRUE;
@@ -335,7 +376,6 @@ BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies)
 
 	return TRUE;
 }
-
 
 BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t>* assemblies)
 {
@@ -386,12 +426,81 @@ BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t
 	return TRUE;
 }
 
+BOOL shelldev_loop_eval(shell_t* sh, std::string loopName, std::vector<asm_t>* assemblies)
+{
+#ifdef _M_X64
+	size_t addr = sh->curr.Rip;
+#elif defined(_M_IX86)
+	size_t addr = sh->curr.Eip;
+#endif
+
+	std::vector<std::string> instructions;
+	std::vector<unsigned char> data;
+
+	asm_t loopasm;
+	loopasm.instruction = loopName;
+	loopasm.size = 0;
+	assemblies->push_back(loopasm);
+
+	std::cout << "You have entered loop praser." << std::endl;
+	std::cout << "Type \".quit\" to finish the loop." << std::endl;
+	std::cout << std::endl << "> " << loopName << std::endl;
+
+	while (true)
+	{
+		asm_t tempAsm;
+		std::vector<unsigned char> temp;
+		std::string input;
+
+		std::cout << ">>> ";
+		std::getline(std::cin, input);
+
+		if (input == ".quit")
+			break;
+		
+		instructions.push_back(input);
+
+		if (input[0] != 'j' && !shelldev_assemble(input.c_str(), temp, addr + temp.size()))
+			return FALSE;
+
+		if (input[0] != 'j')
+		{
+			tempAsm.instruction = input;
+			tempAsm.bytes = temp;
+			tempAsm.size = temp.size();
+			assemblies->push_back(tempAsm);
+		}
+	}
+
+	if (!shelldev_assemble_loop(instructions, data, addr + data.size()))
+		return FALSE;
+
+	std::vector<unsigned char> jumpBytes(data.end() - 2, data.end());
+
+	loopasm.instruction = instructions[instructions.size() - 1];
+	loopasm.bytes = jumpBytes;
+	loopasm.size = jumpBytes.size();
+
+	assemblies->push_back(loopasm);
+
+	if (!shelldev_write_shellcode(sh, data.data(), data.size()))
+		return FALSE;
+
+	shelldev_debug_shellcode(sh);
+
+	shelldev_print_registers(sh);
+
+	return TRUE;
+}
+
 BOOL shelldev_eval(shell_t* sh, std::string command, std::vector<asm_t>* assemblies)
 {
 	try
 	{
 		if (command.at(0) == '.')
 			return shelldev_run_command(sh, command, assemblies);
+		else if (command.at(command.size() - 1) == ':')
+			return shelldev_loop_eval(sh, command, assemblies);
 
 		return shelldev_run_shellcode(sh, command, assemblies);
 	}
