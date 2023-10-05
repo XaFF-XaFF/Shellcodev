@@ -351,9 +351,11 @@ static BOOL shelldev_edit(shell_t* sh, std::vector<asm_t>* assemblies, std::vect
 
 static BOOL shelldev_insert(shell_t* sh, std::vector<asm_t>* assemblies, std::vector<std::string> parts)
 {
-	if (!is_number(parts[0]))
-		shelldev_print_errors("Please specify index after which insertion should happen")
+	if (!is_number(parts[0])){
+		shelldev_print_errors("Please specify index after which insertion should happen");
 		return FALSE;
+	}
+	int base_insert_idx = std::stoi(parts[0])+1;
 
 	std::cout << "Inserting at position: " << dye::light_green(std::stoi(parts[0])+1) << std::endl;
 	std::cout << "Type '-' to quit editing" << std::endl;
@@ -362,8 +364,10 @@ static BOOL shelldev_insert(shell_t* sh, std::vector<asm_t>* assemblies, std::ve
 	if (input == "-")
 		return TRUE;
 
-	assemblies->insert(std::stoi(parts[0])+1).instruction = input;
+	assemblies->insert(base_insert_idx).instruction = input;
 
+	base_insert_idx += 1;
+	
 	shelldev_run_shellcode(sh, assemblies);
 
 	return TRUE;
