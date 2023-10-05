@@ -443,7 +443,7 @@ BOOL shelldev_loop_eval(shell_t* sh, std::string loopName, std::vector<asm_t>* a
 	assemblies->push_back(loopasm);
 
 	std::cout << "You have entered loop praser." << std::endl;
-	std::cout << "Type \".quit\" to finish the loop." << std::endl;
+	std::cout << "Type \"-\" to finish the loop." << std::endl;
 	std::cout << std::endl << "> " << loopName << std::endl;
 
 	while (true)
@@ -455,7 +455,7 @@ BOOL shelldev_loop_eval(shell_t* sh, std::string loopName, std::vector<asm_t>* a
 		std::cout << ">>> ";
 		std::getline(std::cin, input);
 
-		if (input == ".quit")
+		if (input == "-")
 			break;
 		
 		instructions.push_back(input);
