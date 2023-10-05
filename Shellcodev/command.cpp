@@ -349,6 +349,26 @@ static BOOL shelldev_edit(shell_t* sh, std::vector<asm_t>* assemblies, std::vect
 	return TRUE;
 }
 
+static BOOL shelldev_insert(shell_t* sh, std::vector<asm_t>* assemblies, std::vector<std::string> parts)
+{
+	if (!is_number(parts[0]))
+		shelldev_print_errors("Please specify index after which insertion should happen")
+		return FALSE;
+
+	std::cout << "Inserting at position: " << dye::light_green(std::stoi(parts[0])+1) << std::endl;
+	std::cout << "Type '-' to quit editing" << std::endl;
+
+	std::string input = shelldev_read();
+	if (input == "-")
+		return TRUE;
+
+	assemblies->insert(std::stoi(parts[0])+1).instruction = input;
+
+	shelldev_run_shellcode(sh, assemblies);
+
+	return TRUE;
+}
+
 static BOOL shelldev_toshell(std::vector<asm_t>* assemblies, std::vector<std::string> parts)
 {
 	if (parts[0] == "c")
@@ -425,8 +445,9 @@ static BOOL winrepl_command_help()
 	std::cout << ".registers\t\tShow more detailed register info." << std::endl;
 	std::cout << ".list\t\t\tShow list of previously executed assembly instructions." << std::endl;
 	std::cout << ".edit line\t\tEdit specified line in list." << std::endl;
+	std::cout << ".ins line\t\tInsert instructions after index." << std::endl;
 	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
-	std::cout << ".xor e/d/status\t\tEnable, disable or show status of nullbyte xoring." << std::endl;
+	std::cout << ".xor \t\tEnable or disable and show status of nullbyte xoring." << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
 	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
@@ -455,6 +476,8 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_list(assemblies);
 	else if (mainCmd == ".edit")
 		return shelldev_edit(sh, assemblies, parts);
+	else if (mainCmd == ".ins")
+		return shelldev_insert(sh, assemblies, parts);
 	else if (mainCmd == ".toshell")
 		return shelldev_toshell(assemblies, parts);
 	else if (mainCmd == ".inject")
