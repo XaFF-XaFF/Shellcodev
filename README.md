@@ -16,9 +16,11 @@ This project is based on [WinREPL](https://github.com/XaFF-XaFF/WinREPL) by zero
 .list                   Show list of previously executed assembly instructions.
 .edit line              Edit specified line in list.
 .del line               Delete specified line from list.
+.xor e/d/status         Enable, disable or show status of nullbyte xoring.
 .read addr size         Read from a memory address.
 .write addr hexdata     Write to a memory address.
-.toshell format         Convert list to selected shellcode format. Available formats: c
+.toshell format         Convert list to selected shellcode format. Available formats: c, cs, raw
+.inject pid             Test shellcode by injecting it into the process. Works currently only on x86!
 .allocate size          Allocate a memory buffer.
 .loadlibrary path       Load a DLL into the process.
 .kernel32 func          Get address of a kernel32 export.
