@@ -205,7 +205,7 @@ static BOOL shelldev_command_read(shell_t* sh, std::vector<std::string> parts)
 		bytes.reserve(size);
 
 		SIZE_T nBytes;
-
+		
 		if (!ReadProcessMemory(
 			sh->procInfo.hProcess,
 			(LPCVOID)x,
@@ -308,7 +308,7 @@ static BOOL shelldev_list(std::vector<asm_t>* assemblies)
 	int count = 0;
 	for (asm_t assembly : *assemblies)
 	{
-		std::cout << dye::light_green(count) << ".\t";
+		std::cout << std::dec << dye::light_green(count) << ".\t";
 		std::cout << assembly.instruction;
 
 		for (int i = 0; i < (24 - assembly.instruction.size()); i++)
