@@ -433,6 +433,18 @@ static BOOL shelldev_xoring(std::string parameter)
 	return TRUE;
 }
 
+static BOOL shelldev_command_stackframe(shell_t* sh, std::vector<asm_t>* assemblies)
+{
+#ifdef _M_X64
+	std::string instructions = "push rbp;mov rbp, rsp";
+#elif defined(_M_IX86)
+	std::string instructions = "push ebp;mov ebp, esp";
+#endif
+	shelldev_run_shellcode(sh, instructions, assemblies);
+
+	return TRUE;
+}
+
 static BOOL winrepl_command_help()
 {
 	std::cout << ".help\t\t\tShow this help screen." << std::endl;
@@ -441,6 +453,7 @@ static BOOL winrepl_command_help()
 	std::cout << ".edit line\t\tEdit specified line in list." << std::endl;
 	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
 	std::cout << ".xor e/d/status\t\tEnable, disable or show status of nullbyte xoring." << std::endl;
+	std::cout << ".nsf\t\tEstablish new stackframe" << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
 	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
@@ -475,6 +488,8 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_inject_shellcode(assemblies, parts[0]);
 	else if (mainCmd == ".read")
 		return shelldev_command_read(sh, parts);
+	else if (mainCmd == ".nsf")
+		return shelldev_command_stackframe(sh, assemblies);
 	else if (mainCmd == ".del")
 		return shelldev_command_delete(sh, assemblies, parts);
 	else if (mainCmd == ".xor")
