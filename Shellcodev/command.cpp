@@ -416,20 +416,43 @@ static BOOL shelldev_command_delete(shell_t* sh, std::vector<asm_t>* assemblies,
 	return TRUE;
 }
 
-static BOOL shelldev_xoring(std::string parameter)
+static BOOL shelldev_command_insert(shell_t* sh, std::vector<asm_t>* assemblies, std::vector<std::string> parts)
 {
-	if (parameter == "e")
-		xorNulls = TRUE;
-	else if (parameter == "d")
-		xorNulls = FALSE;
-	else if (parameter == "status")
-		if (xorNulls == TRUE)
-			std::cout << "Xoring is " << dye::green("enabled") << std::endl;
-		else
-			std::cout << "Xoring is " << dye::red("disabled") << std::endl;
-	else
-		std::cout << "Invalid parameter!" << std::endl;
+	if (!is_number(parts[0])) 
+	{
+		shelldev_print_errors("Please specify index after which insertion should happen");
+		return FALSE;
+	}
+	int base_insert_idx = std::stoi(parts[0]) + 1;
 
+	std::cout << "Inserting at position: " << dye::light_green(std::stoi(parts[0]) + 1) << std::endl;
+	std::cout << "Type '-' to quit editing" << std::endl;
+
+	std::string input = shelldev_read();
+	if (input == "-")
+		return TRUE;
+
+	asm_t temp;
+	temp.instruction = input;
+	assemblies->insert(assemblies->begin() + base_insert_idx, temp);
+
+	base_insert_idx += 1;
+
+	shelldev_run_shellcode(sh, assemblies);
+
+	return TRUE;
+}
+
+static BOOL shelldev_xoring()
+{
+	if (xorNulls) {
+		xorNulls = FALSE;
+		std::cout << "Xoring is " << dye::red("disabled") << std::endl;
+	}
+	else {
+		xorNulls = TRUE;
+		std::cout << "Xoring is " << dye::green("enabled") << std::endl;
+	}
 	return TRUE;
 }
 
@@ -450,10 +473,11 @@ static BOOL winrepl_command_help()
 	std::cout << ".help\t\t\tShow this help screen." << std::endl;
 	std::cout << ".registers\t\tShow more detailed register info." << std::endl;
 	std::cout << ".list\t\t\tShow list of previously executed assembly instructions." << std::endl;
+	std::cout << ".ins line\t\tInsert instructions after index." << std::endl;
 	std::cout << ".edit line\t\tEdit specified line in list." << std::endl;
 	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
-	std::cout << ".xor e/d/status\t\tEnable, disable or show status of nullbyte xoring." << std::endl;
-	std::cout << ".nsf\t\tEstablish new stackframe" << std::endl;
+	std::cout << ".xor\t\t\tEnable or disable and show status of nullbyte xoring." << std::endl;
+	std::cout << ".nsf\t\t\tEstablish new stackframe" << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
 	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
@@ -492,8 +516,10 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_command_stackframe(sh, assemblies);
 	else if (mainCmd == ".del")
 		return shelldev_command_delete(sh, assemblies, parts);
+	else if (mainCmd == ".ins")
+		return shelldev_command_insert(sh, assemblies, parts);
 	else if (mainCmd == ".xor")
-		return shelldev_xoring(parts[0]);
+		return shelldev_xoring();
 	else if (mainCmd == ".write")
 		return shelldev_command_write(sh, parts);
 	else if (mainCmd == ".allocate")
