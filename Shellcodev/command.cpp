@@ -300,7 +300,15 @@ static BOOL shelldev_command_reset(shell_t* sh, std::vector<asm_t>* assemblies)
 	TerminateProcess(sh->procInfo.hProcess, 0);
 	DebugActiveProcessStop(sh->procInfo.dwProcessId);
 	assemblies->clear();
-	return FALSE;
+	return TRUE;
+}
+
+static BOOL shelldev_command_reset(shell_t* sh)
+{
+	shelldev_print_good("Resetting the environment.");
+	TerminateProcess(sh->procInfo.hProcess, 0);
+	DebugActiveProcessStop(sh->procInfo.dwProcessId);
+	return TRUE;
 }
 
 static BOOL shelldev_list(std::vector<asm_t>* assemblies)
@@ -344,7 +352,8 @@ static BOOL shelldev_edit(shell_t* sh, std::vector<asm_t>* assemblies, std::vect
 
 	assemblies->at(std::stoi(parts[0])).instruction = input;
 
-	shelldev_run_shellcode(sh, assemblies);
+	if (!shelldev_run_shellcode(sh, assemblies))
+		return FALSE;
 
 	return TRUE;
 }
