@@ -205,7 +205,7 @@ static BOOL shelldev_command_read(shell_t* sh, std::vector<std::string> parts)
 		bytes.reserve(size);
 
 		SIZE_T nBytes;
-
+		
 		if (!ReadProcessMemory(
 			sh->procInfo.hProcess,
 			(LPCVOID)x,
@@ -300,7 +300,15 @@ static BOOL shelldev_command_reset(shell_t* sh, std::vector<asm_t>* assemblies)
 	TerminateProcess(sh->procInfo.hProcess, 0);
 	DebugActiveProcessStop(sh->procInfo.dwProcessId);
 	assemblies->clear();
-	return FALSE;
+	return TRUE;
+}
+
+static BOOL shelldev_command_reset(shell_t* sh)
+{
+	shelldev_print_good("Resetting the environment.");
+	TerminateProcess(sh->procInfo.hProcess, 0);
+	DebugActiveProcessStop(sh->procInfo.dwProcessId);
+	return TRUE;
 }
 
 static BOOL shelldev_list(std::vector<asm_t>* assemblies)
@@ -308,7 +316,7 @@ static BOOL shelldev_list(std::vector<asm_t>* assemblies)
 	int count = 0;
 	for (asm_t assembly : *assemblies)
 	{
-		std::cout << dye::light_green(count) << ".\t";
+		std::cout << std::dec << dye::light_green(count) << ".\t";
 		std::cout << assembly.instruction;
 
 		for (int i = 0; i < (24 - assembly.instruction.size()); i++)
@@ -344,7 +352,8 @@ static BOOL shelldev_edit(shell_t* sh, std::vector<asm_t>* assemblies, std::vect
 
 	assemblies->at(std::stoi(parts[0])).instruction = input;
 
-	shelldev_run_shellcode(sh, assemblies);
+	if (!shelldev_run_shellcode(sh, assemblies))
+		return FALSE;
 
 	return TRUE;
 }
@@ -407,19 +416,54 @@ static BOOL shelldev_command_delete(shell_t* sh, std::vector<asm_t>* assemblies,
 	return TRUE;
 }
 
-static BOOL shelldev_xoring(std::string parameter)
+static BOOL shelldev_command_insert(shell_t* sh, std::vector<asm_t>* assemblies, std::vector<std::string> parts)
 {
-	if (parameter == "e")
-		xorNulls = TRUE;
-	else if (parameter == "d")
+	if (!is_number(parts[0])) 
+	{
+		shelldev_print_errors("Please specify index after which insertion should happen");
+		return FALSE;
+	}
+	int base_insert_idx = std::stoi(parts[0]) + 1;
+
+	std::cout << "Inserting at position: " << dye::light_green(std::stoi(parts[0]) + 1) << std::endl;
+	std::cout << "Type '-' to quit editing" << std::endl;
+
+	std::string input = shelldev_read();
+	if (input == "-")
+		return TRUE;
+
+	asm_t temp;
+	temp.instruction = input;
+	assemblies->insert(assemblies->begin() + base_insert_idx, temp);
+
+	base_insert_idx += 1;
+
+	shelldev_run_shellcode(sh, assemblies);
+
+	return TRUE;
+}
+
+static BOOL shelldev_xoring()
+{
+	if (xorNulls) {
 		xorNulls = FALSE;
-	else if (parameter == "status")
-		if (xorNulls == TRUE)
-			std::cout << "Xoring is " << dye::green("enabled") << std::endl;
-		else
-			std::cout << "Xoring is " << dye::red("disabled") << std::endl;
-	else
-		std::cout << "Invalid parameter!" << std::endl;
+		std::cout << "Xoring is " << dye::red("disabled") << std::endl;
+	}
+	else {
+		xorNulls = TRUE;
+		std::cout << "Xoring is " << dye::green("enabled") << std::endl;
+	}
+	return TRUE;
+}
+
+static BOOL shelldev_command_stackframe(shell_t* sh, std::vector<asm_t>* assemblies)
+{
+#ifdef _M_X64
+	std::string instructions = "push rbp;mov rbp, rsp";
+#elif defined(_M_IX86)
+	std::string instructions = "push ebp;mov ebp, esp";
+#endif
+	shelldev_run_shellcode(sh, instructions, assemblies);
 
 	return TRUE;
 }
@@ -429,9 +473,11 @@ static BOOL winrepl_command_help()
 	std::cout << ".help\t\t\tShow this help screen." << std::endl;
 	std::cout << ".registers\t\tShow more detailed register info." << std::endl;
 	std::cout << ".list\t\t\tShow list of previously executed assembly instructions." << std::endl;
+	std::cout << ".ins line\t\tInsert instructions after index." << std::endl;
 	std::cout << ".edit line\t\tEdit specified line in list." << std::endl;
 	std::cout << ".del line\t\tDelete specified line from list." << std::endl;
-	std::cout << ".xor e/d or status\t\tEnable or disable nullbyte xoring. Works currently only on x86!" << std::endl;
+	std::cout << ".xor\t\t\tEnable or disable and show status of nullbyte xoring." << std::endl;
+	std::cout << ".nsf\t\t\tEstablish new stackframe" << std::endl;
 	std::cout << ".read addr size\t\tRead from a memory address." << std::endl;
 	std::cout << ".write addr hexdata\tWrite to a memory address." << std::endl;
 	std::cout << ".toshell format\t\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
@@ -466,10 +512,14 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_inject_shellcode(assemblies, parts[0]);
 	else if (mainCmd == ".read")
 		return shelldev_command_read(sh, parts);
+	else if (mainCmd == ".nsf")
+		return shelldev_command_stackframe(sh, assemblies);
 	else if (mainCmd == ".del")
 		return shelldev_command_delete(sh, assemblies, parts);
+	else if (mainCmd == ".ins")
+		return shelldev_command_insert(sh, assemblies, parts);
 	else if (mainCmd == ".xor")
-		return shelldev_xoring(parts[0]);
+		return shelldev_xoring();
 	else if (mainCmd == ".write")
 		return shelldev_command_write(sh, parts);
 	else if (mainCmd == ".allocate")
