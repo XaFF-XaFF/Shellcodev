@@ -469,6 +469,19 @@ static BOOL shelldev_toshell(std::vector<asm_t>* assemblies, std::vector<std::st
 		}
 		std::cout << "};" << std::endl;
 	}
+	else if (parts[0] == "py")
+	{
+		int count = 0;
+		std::cout << "shellcode = (b\"";
+		for (int i = 0; i < assemblies->size(); i++)
+		{
+			for (int j = 0; j < assemblies->at(i).instruction.size(); j++)
+			{
+				printf("\\x%x", assemblies->at(i).instruction[j]);
+			}
+		}
+		std::cout << "\")" << std::endl;
+	}
 	else if (parts[0] == "raw")
 	{
 		for (int i = 0; i < assemblies->size(); i++) {
@@ -608,7 +621,7 @@ static BOOL winrepl_command_help()
 	std::cout << ".read <addr> <size>\tRead from a memory address" << std::endl;
 	std::cout << ".swap <src> <dst>\tSwap source with destination lines" << std::endl;
 	std::cout << ".write <addr> <hexdata>\tWrite to a memory address" << std::endl;
-	std::cout << ".toshell <format>\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
+	std::cout << ".toshell <format>\tConvert list to selected shellcode format. Available formats: c, cs, raw, py" << std::endl;
 	std::cout << ".inject <pid>\t\tTest shellcode by injecting it into the process. Works currently only on x86!" << std::endl;
 	std::cout << ".alloc <size>\t\tAllocate a memory buffer" << std::endl;
 	std::cout << ".loadlibrary <path>\tLoad a DLL into the process" << std::endl;
