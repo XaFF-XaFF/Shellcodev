@@ -50,6 +50,31 @@ static BOOL shelldev_command_kernel32(shell_t* sh, std::vector<std::string> part
 	return TRUE;
 }
 
+static BOOL shelldev_command_load(shell_t* sh, std::vector<std::string> parts)
+{
+	if (parts.size() == 0 || parts.size() > 2)
+	{
+		shelldev_print_errors("Usage: .load <dll> *<func> | *Optional");
+		return TRUE;
+	}
+
+	HMODULE dll = LoadLibraryA(parts[0].c_str());
+	FARPROC addr = nullptr;
+	if(parts.size() == 2)
+		addr = GetProcAddress(dll, parts[1].c_str());
+
+	if (parts.size() == 2 && !addr)
+	{
+		shelldev_print_errors("Unable to find that export!");
+		return TRUE;
+	}
+
+	shelldev_print_good("%s at %p, export located at %p", parts[0].c_str(), (LPVOID)dll, (LPVOID)addr);
+
+	return TRUE;
+}
+
+
 static BOOL shelldev_command_shellcode(shell_t* sh, std::vector<std::string> parts)
 {
 	do
@@ -431,66 +456,74 @@ static BOOL shelldev_swap(shell_t* sh, std::vector<asm_t>* assemblies, std::vect
 	return TRUE;
 }
 
-static BOOL shelldev_toshell(std::vector<asm_t>* assemblies, std::vector<std::string> parts)
+static BOOL shelldev_toshell(shell_t* sh, std::vector<asm_t>* assemblies, std::vector<std::string> parts)
 {
+#ifdef _M_X64
+	size_t addr = sh->curr.Rip;
+#elif defined(_M_IX86)
+	size_t addr = sh->curr.Eip;
+#endif
+
+	std::vector<unsigned char> data;
+
+	if (!shelldev_assemble_loop(assemblies, data, addr + data.size()))
+		return FALSE;
+
+	printf("\n");
 	if (parts[0] == "c")
 	{
 		int count = 0;
-		std::cout << "unsigned char shellcode[] = {" << std::endl;
-		for (int i = 0; i < assemblies->size(); i++)
-		{
-			for (int j = 0; j < assemblies->at(i).instruction.size(); j++)
-			{
-				if (count % 12 == 0)
-					printf("\n");
-				else
-					printf("0x%x, ", assemblies->at(i).instruction[j]);
 
-				count++;
-			}
+		std::cout << "unsigned char shellcode[] = {" << std::endl;
+		for (int i = 0; i < data.size(); i++)
+		{
+			if (count != 0 && count % 12 == 0)
+				printf("\n");
+			else if (i == data.size() - 1)
+				printf("0x%02x ", data.at(i));
+			else
+				printf("0x%02x, ", data.at(i));
+
+			count++;
 		}
 		std::cout << "};" << std::endl;
 	}
 	else if (parts[0] == "cs")
 	{
 		int count = 0;
-		std::cout << "byte[] shellcode = {" << std::endl;
-		for (int i = 0; i < assemblies->size(); i++)
-		{
-			for (int j = 0; j < assemblies->at(i).instruction.size(); j++)
-			{
-				if (count % 12 == 0)
-					printf("\n");
-				else
-					printf("0x%x, ", assemblies->at(i).instruction[j]);
 
-				count++;
-			}
+		std::cout << "byte[] shellcode = {" << std::endl;
+		for (int i = 0; i < data.size(); i++)
+		{
+			if (count != 0 && count % 12 == 0)
+				printf("\n");
+			else if (i == data.size() - 1)
+				printf("0x%02x ", data.at(i));
+			else
+				printf("0x%02x, ", data.at(i));
+
+			count++;
 		}
 		std::cout << "};" << std::endl;
 	}
 	else if (parts[0] == "py")
 	{
-		int count = 0;
 		std::cout << "shellcode = (b\"";
-		for (int i = 0; i < assemblies->size(); i++)
+		for (int i = 0; i < data.size(); i++)
 		{
-			for (int j = 0; j < assemblies->at(i).instruction.size(); j++)
-			{
-				printf("\\x%x", assemblies->at(i).instruction[j]);
-			}
+			printf("\\x%02x", data.at(i));
 		}
 		std::cout << "\")" << std::endl;
 	}
 	else if (parts[0] == "raw")
 	{
-		for (int i = 0; i < assemblies->size(); i++) {
-			for (int j = 0; j < assemblies->at(i).instruction.size(); j++) {
-				printf("%X", assemblies->at(i).instruction[j]);
-			}
+		for (int i = 0; i < data.size(); i++)
+		{
+			printf("%02X", data.at(i));
 		}
 		printf("\n");
 	}
+	printf("\n");
 
 	return TRUE;
 }
@@ -626,6 +659,7 @@ static BOOL winrepl_command_help()
 	std::cout << ".alloc <size>\t\tAllocate a memory buffer" << std::endl;
 	std::cout << ".loadlibrary <path>\tLoad a DLL into the process" << std::endl;
 	std::cout << ".kernel32 <func>\tGet address of a kernel32 export" << std::endl;
+	std::cout << ".load <dll> *<func>\tGet address of a specified export. *Optional" << std::endl;
 	std::cout << ".shellcode <hexdata>\tExecute raw shellcode" << std::endl;
 	std::cout << ".peb\t\t\tLoads PEB into accumulator" << std::endl;
 	std::cout << ".fixip\t\t\tFix instruction pointer when 0xCC or 0xC3 is encountered" << std::endl;
@@ -652,7 +686,7 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 	else if (mainCmd == ".swap")
 		return shelldev_swap(sh, assemblies, parts);
 	else if (mainCmd == ".toshell")
-		return shelldev_toshell(assemblies, parts);
+		return shelldev_toshell(sh, assemblies, parts);
 	else if (mainCmd == ".inject")
 		return shelldev_inject_shellcode(assemblies, parts[0]);
 	else if (mainCmd == ".read")
@@ -681,6 +715,8 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_command_loadlibrary(sh, parts);
 	else if (mainCmd == ".kernel32")
 		return shelldev_command_kernel32(sh, parts);
+	else if (mainCmd == ".load")
+		return shelldev_command_load(sh, parts);
 	else if (mainCmd == ".reset")
 		return (shelldev_command_reset_assemblies(assemblies) && shelldev_command_reset(sh));
 	else if (mainCmd == ".shellcode")
