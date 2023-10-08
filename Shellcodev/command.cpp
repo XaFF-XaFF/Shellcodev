@@ -400,6 +400,37 @@ static BOOL shelldev_edit(shell_t* sh, std::vector<asm_t>* assemblies, std::vect
 	return TRUE;
 }
 
+static BOOL shelldev_swap(shell_t* sh, std::vector<asm_t>* assemblies, std::vector<std::string> parts)
+{
+	if (parts.size() != 2) {
+		shelldev_print_errors("Usage: .swap <src> <dst>");
+		return FALSE;
+	}
+
+	if (!is_number(parts[0])) {
+		return FALSE;
+	}
+
+	if (!is_number(parts[1])) {
+		return FALSE;
+	}
+
+	std::string src_instr = assemblies->at(std::stoi(parts[0])).instruction;
+	std::string dst_instr = assemblies->at(std::stoi(parts[1])).instruction;
+
+	std::cout << "[*] " << dye::light_purple(src_instr)<< " <-> " << dye::purple_on_black(src_instr) << std::endl;
+
+	assemblies->at(std::stoi(parts[0])).instruction = dst_instr;
+	assemblies->at(std::stoi(parts[1])).instruction = src_instr;
+
+	if (!shelldev_run_shellcode(sh, assemblies)) {
+		return FALSE;
+	}
+
+
+	return TRUE;
+}
+
 static BOOL shelldev_toshell(std::vector<asm_t>* assemblies, std::vector<std::string> parts)
 {
 	if (parts[0] == "c")
@@ -575,6 +606,7 @@ static BOOL winrepl_command_help()
 	std::cout << ".csf\t\t\tClear stackframe and load previous frame" << std::endl;
 	std::cout << ".rsf\t\t\tFully reset stack by ensuring equivalent number of LIFO operations" << std::endl;
 	std::cout << ".read <addr> <size>\tRead from a memory address" << std::endl;
+	std::cout << ".swap <src> <dst>\tSwap source with destination lines" << std::endl;
 	std::cout << ".write <addr> <hexdata>\tWrite to a memory address" << std::endl;
 	std::cout << ".toshell <format>\tConvert list to selected shellcode format. Available formats: c, cs, raw" << std::endl;
 	std::cout << ".inject <pid>\t\tTest shellcode by injecting it into the process. Works currently only on x86!" << std::endl;
@@ -604,6 +636,8 @@ BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* 
 		return shelldev_list(assemblies);
 	else if (mainCmd == ".edit")
 		return shelldev_edit(sh, assemblies, parts);
+	else if (mainCmd == ".swap")
+		return shelldev_swap(sh, assemblies, parts);
 	else if (mainCmd == ".toshell")
 		return shelldev_toshell(assemblies, parts);
 	else if (mainCmd == ".inject")
