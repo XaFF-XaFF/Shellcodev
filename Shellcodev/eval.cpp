@@ -306,10 +306,17 @@ static BOOL shelldev_jump(asmjit::Label loop, asmjit::x86::Assembler* a, std::st
 	return TRUE;
 }
 
-static BOOL shelldev_assemble_loop(std::vector<std::string> loopInstructions, std::vector<unsigned char>& data, size_t address)
+// If jump instruction detected, reassemble everything
+BOOL shelldev_assemble_loop(std::vector<asm_t>* assemblies, std::vector<unsigned char>& data, size_t address)
 {
 	using namespace asmjit;
 	using namespace asmtk;
+
+	struct Loop
+	{
+		std::string name;
+		Label label;
+	};
 
 	// Setup CodeInfo
 	JitRuntime jr;
@@ -326,14 +333,46 @@ static BOOL shelldev_assemble_loop(std::vector<std::string> loopInstructions, st
 	// Attach an assembler to the CodeHolder.
 	x86::Assembler a(&code);
 
-	Label loop = a.newLabel();
-	a.bind(loop);
+	std::vector<Loop> loops;
 	AsmParser p(&a);
 
-	for (int i = 0; i < loopInstructions.size(); i++)
+	for (int i = 0; i < assemblies->size(); i++)
 	{
-		if (!shelldev_jump(loop, &a, loopInstructions[i]))
-			p.parse(loopInstructions[i].c_str());
+		std::string instruction = assemblies->at(i).instruction;
+
+		if (instruction[instruction.size() - 1] == ':')
+		{
+			Loop loop;
+			loop.name = instruction.erase(instruction.size() - 1, 1); // Remove : from label
+			loop.label = a.newLabel();
+
+			a.bind(loop.label);
+			loops.push_back(loop);
+		}
+		else if (instruction[0] == 'j')
+		{
+			std::string labelName;
+			for (int i = instruction.size() - 1; i >= 0; i--)
+			{
+				if (instruction[i] != ' ')
+					labelName += instruction[i];
+				else break;
+			}
+
+			std::reverse(labelName.begin(), labelName.end());
+
+			Label label; 
+			for (int i = 0; i < loops.size(); i++)
+				if (loops.at(i).name == labelName)
+					label = loops.at(i).label;
+
+			if (!shelldev_jump(label, &a, instruction))
+				return FALSE;
+		}
+		else
+		{
+			err = p.parse(instruction.c_str());
+		}
 	}
 
 	code.detach(&a);
@@ -404,8 +443,10 @@ BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t
 	for (std::string& instruction : instructions)
 	{
 		std::vector<unsigned char> temp;
-		if (!shelldev_assemble(instruction.c_str(), temp, addr + temp.size()))
-			return TRUE;
+
+		if(instruction[instruction.size() - 1] != ':')
+			if (!shelldev_assemble(instruction.c_str(), temp, addr + temp.size()))
+				return FALSE;
 
 		asm_t a;
 		a.instruction = instruction;
@@ -426,7 +467,7 @@ BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t
 	return TRUE;
 }
 
-BOOL shelldev_loop_eval(shell_t* sh, std::string loopName, std::vector<asm_t>* assemblies)
+BOOL shelldev_loop_eval(std::string jump, shell_t* sh, std::vector<asm_t>* assemblies)
 {
 #ifdef _M_X64
 	size_t addr = sh->curr.Rip;
@@ -434,54 +475,17 @@ BOOL shelldev_loop_eval(shell_t* sh, std::string loopName, std::vector<asm_t>* a
 	size_t addr = sh->curr.Eip;
 #endif
 
-	std::vector<std::string> instructions;
 	std::vector<unsigned char> data;
 
-	asm_t loopasm;
-	loopasm.instruction = loopName;
-	loopasm.size = 0;
-	assemblies->push_back(loopasm);
+	asm_t asmt;
+	asmt.instruction = jump;
 
-	std::cout << "You have entered loop praser." << std::endl;
-	std::cout << "Type \"-\" to finish the loop." << std::endl;
-	std::cout << std::endl << "> " << loopName << std::endl;
+	assemblies->push_back(asmt);
 
-	while (true)
-	{
-		asm_t tempAsm;
-		std::vector<unsigned char> temp;
-		std::string input;
-
-		std::cout << ">>> ";
-		std::getline(std::cin, input);
-
-		if (input == "-")
-			break;
-		
-		instructions.push_back(input);
-
-		if (input[0] != 'j' && !shelldev_assemble(input.c_str(), temp, addr + temp.size()))
-			return FALSE;
-
-		if (input[0] != 'j')
-		{
-			tempAsm.instruction = input;
-			tempAsm.bytes = temp;
-			tempAsm.size = temp.size();
-			assemblies->push_back(tempAsm);
-		}
-	}
-
-	if (!shelldev_assemble_loop(instructions, data, addr + data.size()))
+	if (!shelldev_assemble_loop(assemblies, data, addr + data.size()))
 		return FALSE;
 
-	std::vector<unsigned char> jumpBytes(data.end() - 2, data.end());
-
-	loopasm.instruction = instructions[instructions.size() - 1];
-	loopasm.bytes = jumpBytes;
-	loopasm.size = jumpBytes.size();
-
-	assemblies->push_back(loopasm);
+	// assemblies->at(assemblies->size() - 1).bytes;
 
 	if (!shelldev_write_shellcode(sh, data.data(), data.size()))
 		return FALSE;
@@ -489,6 +493,7 @@ BOOL shelldev_loop_eval(shell_t* sh, std::string loopName, std::vector<asm_t>* a
 	shelldev_debug_shellcode(sh);
 
 	shelldev_print_registers(sh);
+
 
 	return TRUE;
 }
@@ -499,8 +504,8 @@ BOOL shelldev_eval(shell_t* sh, std::string command, std::vector<asm_t>* assembl
 	{
 		if (command.at(0) == '.')
 			return shelldev_run_command(sh, command, assemblies);
-		else if (command.at(command.size() - 1) == ':')
-			return shelldev_loop_eval(sh, command, assemblies);
+		else if (command.at(0) == 'j')
+			return shelldev_loop_eval(command, sh, assemblies);
 
 		return shelldev_run_shellcode(sh, command, assemblies);
 	}

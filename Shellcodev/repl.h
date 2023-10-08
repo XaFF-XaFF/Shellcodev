@@ -42,6 +42,7 @@ std::vector<std::string> shelldev_parse_string(std::string value);
 BOOL shelldev_run_shellcode(shell_t* sh, std::vector<asm_t>* assemblies);
 BOOL shelldev_run_shellcode(shell_t* sh, std::string assembly, std::vector<asm_t>* assemblies);
 BOOL shelldev_run_command(shell_t* sh, std::string command, std::vector<asm_t>* assemblies);
+BOOL shelldev_assemble_loop(std::vector<asm_t>* assemblies, std::vector<unsigned char>& data, size_t address);
 
 void shelldev_print_pids(shell_t* sh);
 void shelldev_print_registers(shell_t* sh);
