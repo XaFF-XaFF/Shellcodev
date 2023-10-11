@@ -101,12 +101,14 @@ static BOOL shelldev_command_peb(shell_t* sh, std::vector<std::string> parts, st
 
 static BOOL shelldev_command_abort(shell_t* sh, std::vector<asm_t>* assemblies)
 {
-	// TODO: I will add loop binder and unbinder so that below works + add exit routine
+	// TODO: I will add loop binder and unbinder so that below works (or is it already implemented on parser level?)
+	// The command '.abort' should be moved to a generic f. e. '.fload' which will load asm instructions from a source file
+	// Logic of .fload should remove macros specific for nasm/yasm/fasm/masm .etc and replace them with asmjit syntax
 	std::string instructions;
 #ifdef _M_X64
-	instructions = "push rbx; xor rbx, rbx; cmp rax, rbx; jne exitlogic; pop rbx; exitlogic:";
+	instructions = "push rbx; xor rbx, rbx; cmp rax, rbx; jne exitlogic; pop rbx; exitlogic: int 0x21";
 #elif defined(_M_IX86)
-	instructions = "push ebx; xor ebx, ebx; cmp eax, ebx; jne exitlogic; pop ebx; exitlogic:";
+	instructions = "push ebx; xor ebx, ebx; cmp eax, ebx; jne exitlogic; pop ebx; exitlogic: int 0x21";
 #endif
 
 	shelldev_run_shellcode(sh, instructions, assemblies);
