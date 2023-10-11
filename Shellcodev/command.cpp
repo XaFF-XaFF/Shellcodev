@@ -571,18 +571,31 @@ static BOOL shelldev_command_stackreset(shell_t* sh, std::vector<asm_t>* assembl
 	std::string randreg = gregs_x32[randpos];
 #endif
 	std::string popsled = "";
-	sprintf("push %s", randreg);
+ 	std::string pushsled = "";
+  	popsled += std::format(";pop %s", randreg);
+	pushsled += std::format(";push %s", randreg);
 	for (asm_t assembly : *assemblies) {
 		std::string first_mnemonic = split(assembly.instruction, " ")[0];
 		if ( first_mnemonic == "push" ) {
 			numpop += 1;
 			popsled += std::format(";pop %s", randreg);
 		}
+  		if ( first_mnemonic == "pop" ) {
+			numpush += 1;
+			pushsled += std::format(";push %s", randreg);
+		}
 	}
+ 	if (numpush == numpop) {
 
+  	} else  if( numpush > numpop ) {
+
+   	} else {
+    
+	}
 	shelldev_print_good("Resetting stack using %d POP instructions to register %s", numpop, randreg);
 	shelldev_run_shellcode(sh, popsled, assemblies);
 	*/
+	
 	return TRUE;
 }
 
@@ -612,7 +625,6 @@ static BOOL winrepl_command_help()
 	std::cout << ".list\t\t\tShow list of previously executed assembly instructions" << std::endl;
 	std::cout << ".ins <line>\t\tInsert instructions after index" << std::endl;
 	std::cout << ".edit <line>\t\tEdit specified line in list" << std::endl;
-	std::cout << ".rem <line>\t\tRemove a specified instruction" << std::endl;
 	std::cout << ".del <line>\t\tDelete specified line from list" << std::endl;
 	std::cout << ".xor\t\t\tEnable or disable and show status of nullbyte xoring" << std::endl;
 	std::cout << ".nsf\t\t\tEstablish new stackframe" << std::endl;
